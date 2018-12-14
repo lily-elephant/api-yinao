@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.SystemMesMapper">
+	<!-- 获取系统消息列表 -->
+	<resultMap id="getSystemMessage" type="yinao.qualityLife.model.domain.SystemMessage"> 
+	</resultMap>
+    <select id="getSystemMessage" resultMap="getSystemMessage">
+    	SELECT
+			`t_base_sysmessage`.smid,
+			`t_base_sysmessage`.title,
+			`t_base_sysmessage`.content,
+			`t_base_sysmessage`.sendtime,
+			`t_base_sysmessage`.clienttype,
+			`t_base_sysmessage`.state
+		FROM
+			 t_base_sysmessage   
+		 WHERE
+ 	  		 t_base_sysmessage.state &gt;0
+		LIMIT #{offset},#{pageSize}
+    </select>
+    <!-- 获取系统消息总数-->
+	<resultMap id="getSystemMesCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount"> 
+	</resultMap>
+    <select id="getSystemMesCount" resultMap="getSystemMesCount">
+    	SELECT
+			count(*) as count
+		FROM
+			 t_base_sysmessage   
+		 WHERE
+ 	  		 t_base_sysmessage.state &gt;0
+    </select>
+    <!-- 添加系统消息 -->
+  <insert id="addSysMessage"   >
+	    	INSERT INTO
+	        	`t_base_sysmessage`
+	        	(title,content,clienttype,state,sendtime,create_time,update_time)
+	        	VALUES
+	        	(#{title}, #{content},#{clienttype},#{state},now(), now() , now())
+	</insert>
+	<!-- 获取系统消息详情 -->
+	<resultMap id="detailSysMessage" type="yinao.qualityLife.model.domain.SystemMessage"> 
+	</resultMap>
+    <select id="detailSysMessage" resultMap="detailSysMessage">
+    	SELECT
+			`t_base_sysmessage`.smid,
+			`t_base_sysmessage`.title,
+			`t_base_sysmessage`.content,
+			`t_base_sysmessage`.sendtime,
+			`t_base_sysmessage`.clienttype,
+			`t_base_sysmessage`.state
+		FROM
+			 t_base_sysmessage   
+		 WHERE
+ 	  		 t_base_sysmessage.smid=#{smid}
+    </select>
+	<!-- 编辑系统消息 -->
+	<update id="updateSysMessage" >
+ 		update `t_base_sysmessage` 
+ 		<set>
+ 			title=#{title},
+ 			content=#{content},
+ 			clienttype=#{clienttype},
+ 			state=#{state},
+ 			sendtime=now(),
+ 			update_time=now()
+ 		</set>
+ 			where smid=#{smid}
+	</update>
+	<!-- 获取系统证书列表 -->
+	<resultMap id="getCertificate" type="yinao.qualityLife.model.domain.Certificate"> 
+	</resultMap>
+    <select id="getCertificate" resultMap="getCertificate">
+    	SELECT
+			`t_source_certificate`.cid,
+			`t_source_certificate`.name,
+			`t_source_certificate`.picture,
+			`t_source_certificate`.brief,
+			`t_source_certificate`.sort
+		FROM
+			 t_source_certificate   
+		 WHERE
+ 	  		 t_source_certificate.state =1
+		LIMIT #{offset},#{pageSize}
+    </select>
+    <!-- 获取系统证书-->
+	<resultMap id="getCertificateCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount"> 
+	</resultMap>
+    <select id="getCertificateCount" resultMap="getCertificateCount">
+    	SELECT
+			count(*) as count
+		FROM
+			 t_source_certificate   
+		 WHERE
+ 	  		 t_source_certificate.state =1
+    </select>
+     <!-- 添加平台证书 -->
+  <insert id="addCertificate"   >
+	    	INSERT INTO
+	        	`t_source_certificate`
+	        	(name,picture,brief,sort,state,create_time,update_time)
+	        	VALUES
+	        	(#{name}, #{picture},#{brief},#{sort},1,now(), now())
+	</insert>
+	<!-- 获取系统证书详情 -->
+	<resultMap id="getCertificateDetail" type="yinao.qualityLife.model.domain.Certificate"> 
+	</resultMap>
+    <select id="getCertificateDetail" resultMap="getCertificateDetail">
+    	SELECT
+			`t_source_certificate`.cid,
+			`t_source_certificate`.name,
+			`t_source_certificate`.picture,
+			`t_source_certificate`.brief,
+			`t_source_certificate`.sort
+		FROM
+			 t_source_certificate   
+		 WHERE
+ 	  		 t_source_certificate.cid =#{cid}
+    </select>
+    <!-- 编辑证书 -->
+	<update id="updateCertificate" >
+ 		update `t_source_certificate` 
+ 		<set>
+ 			name=#{name},
+ 			picture=#{picture},
+ 			brief=#{brief},
+ 			sort=#{sort},
+ 			update_time=now()
+ 		</set>
+ 			where cid=#{cid}
+	</update>
+	<!-- 删除证书 -->
+	<update id="deleteCertificate" >
+ 		update `t_source_certificate` 
+ 		<set>
+ 			state=0,
+ 			update_time=now()
+ 		</set>
+ 			where cid=#{cid}
+	</update>
+</mapper>

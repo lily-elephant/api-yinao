@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.ExamMapper">
+
+	<resultMap id="getUserFromDatabaseMap" type="yinao.qualityLife.model.domain.Exam">
+        <id column="eid" property="eid"/>
+        <result column="ccid" property="ccid"/>
+        <result column="name" property="name"/>
+        <result column="examtype" property="examtype"/>
+        <result column="score" property="score"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+        <result column="ismust" property="ismust"/>
+        <result column="oid" property="oid"/>
+    </resultMap>
+    
+    <resultMap id="getExamOption" type="yinao.qualityLife.model.domain.ExamOption">
+        <result column="oid" property="oid"/>
+        <result column="eid" property="eid"/>
+        <result column="option_name" property="name"/>
+        <result column="option_des" property="content"/>
+    </resultMap>
+    
+    <resultMap id="getExamOptionben" type="yinao.qualityLife.model.domain.ExamBen">
+        <result column="oid" property="oid"/>
+        <result column="eid" property="eid"/>
+        <result column="option_name" property="name"/>
+        <result column="option_des" property="content"/>
+    </resultMap>
+    
+    <select id="getRecordByemid"  resultMap="getExamOptionben">
+		SELECT
+			oid  	
+		FROM
+    		t_test_employer
+		WHERE
+			eid=#{eid}
+			and username = #{username}
+			and state = "1"
+	</select>
+	
+	
+	<select id="getRecordByhkid"  resultMap="getExamOptionben">
+		SELECT
+			oid    	
+		FROM
+    		t_test_housekeeper
+		WHERE
+			eid=#{eid}
+			and username = #{username}
+			and state = "1"
+	</select>
+	
+
+    
+    <!-- 根据试题id获取答案集 -->
+    <select id="examOptionlist"  resultMap="getExamOption">
+		SELECT
+			oid,eid,option_name,option_des  	    	
+		FROM
+    		t_test_exam_option
+		WHERE
+			eid=#{eid}
+	</select>
+	
+	
+	<!-- 根据试题id获取答案集 -->
+    <select id="examAnswer"  resultMap="getExamOption">
+		SELECT
+			oid,eid    	
+		FROM
+    		t_test_exam_answer
+		WHERE
+			eid=#{eid}
+	</select>
+	
+	
+	<!-- 根据试题id获取答案集 -->
+    <select id="examAnswerben"  resultMap="getExamOptionben">
+		SELECT
+			oid,eid    	
+		FROM
+    		t_test_exam_answer
+		WHERE
+			eid=#{eid}
+	</select>
+	
+	
+	<!-- 根据oid 获取name  -->
+    <select id="getNameByOid"  resultMap="getExamOption">
+		SELECT
+			oid,eid,option_name,option_des  	    	
+		FROM
+    		t_test_exam_option
+		WHERE
+			oid=#{oid}
+	</select>
+	
+	
+	<!-- 入門考試 -->
+	<select id="baseExamlist"  resultMap="getUserFromDatabaseMap">
+		SELECT
+			`t_test_exam`.eid,
+        	`t_test_exam`.ccid,
+        	`t_test_exam`.name,
+        	`t_test_exam`.examtype,
+        	`t_test_exam`.score,
+        	`t_test_exam`.create_time,
+        	`t_test_exam`.update_time,
+        	`t_test_exam`.sort      	
+        FROM
+        	`t_test_exam`
+		<where>
+			`t_test_exam`.ccid = '0'
+        </where>   
+		GROUP BY
+			`t_test_exam`.eid 
+			
+	</select>
+	
+    <!-- 获取试题不带答案的结果集 -->
+    <select id="examlist"  resultMap="getUserFromDatabaseMap">
+		SELECT
+			`t_test_exam`.eid,
+        	`t_test_exam`.ccid,
+        	`t_test_exam`.name,
+        	`t_test_exam`.examtype,
+        	`t_test_exam`.score,
+        	`t_test_exam`.create_time,
+        	`t_test_exam`.update_time,
+        	`t_test_exam`.sort,        	
+        	`t_test_coursecatagory`.ismust,
+        	`t_test_coursecatagory`.name as ccname ,
+        	`t_test_exam_answer`.oid 
+        FROM
+        	`t_test_exam` ,
+        	`t_test_coursecatagory`,
+        	`t_test_exam_answer`
+        
+		<where>
+			`t_test_exam`.ccid = `t_test_coursecatagory`.ccid
+			
+			and `t_test_exam`.eid  = `t_test_exam_answer`.eid
+			
+        	<if test="ccid != null and ccid != ''">
+        		and `t_test_exam`.ccid = #{ccid}
+        	</if>
+        	<if test="name != null and name != ''">
+        		and t_test_exam.name like CONCAT('%',#{name},'%')
+        	</if>
+        	<if test="ismust != null and ismust != ''">
+        		and `t_test_coursecatagory`.ismust = #{ismust}
+        	</if>
+        	<if test="eid != null and eid != ''">
+        		and `t_test_exam`.eid = #{eid}
+        	</if>
+        </where>   
+		GROUP BY
+			`t_test_exam`.eid ,
+			`t_test_exam_answer`.oid			
+	</select>
+	
+	    <!-- 获取小程序试题不带答案的随机结果集 -->
+    <select id="getexamlist"  resultMap="getUserFromDatabaseMap">
+    SELECT  
+	  			`t_test_exam`.eid,
+	        	`t_test_exam`.ccid,
+	        	`t_test_exam`.name,
+	        	`t_test_exam`.examtype,
+	        	`t_test_exam`.score,
+	        	`t_test_exam`.create_time,
+	        	`t_test_exam`.update_time,
+	        	`t_test_exam`.sort,
+	        	`t_test_exam`.label,        	
+	        	`t_test_coursecatagory`.ismust,
+	        	`t_test_coursecatagory`.name as ccname ,
+	        	`t_test_exam_answer`.oid 
+			FROM
+			`t_test_exam` ,
+        	`t_test_coursecatagory`,
+        	`t_test_exam_answer`
+        	<where>
+			`t_test_exam`.ccid = `t_test_coursecatagory`.ccid
+			
+			and `t_test_exam`.eid  = `t_test_exam_answer`.eid
+			and `t_test_exam`.label  = #{label}
+			and `t_test_exam`.examtype  = #{examtype}
+        	<if test="ccid != null and ccid != ''">
+        		and `t_test_exam`.ccid = #{ccid}
+        	</if>
+        	<if test="name != null and name != ''">
+        		and t_test_exam.name like CONCAT('%',#{name},'%')
+        	</if>
+        	<if test="ismust != null and ismust != ''">
+        		and `t_test_coursecatagory`.ismust = #{ismust}
+        	</if>
+        	<if test="eid != null and eid != ''">
+        		and `t_test_exam`.eid = #{eid}
+        	</if>
+        </where>   
+		ORDER BY RAND() 
+		limit 1
+	</select>
+	
+	<!-- 新增考试结果 -->
+	<insert id="addresult"   >
+	<choose>
+        <when test="usertype !=null and usertype == 'EMPLOYER'">
+            INSERT INTO
+        	`t_test_employer`
+        	(oid,eid,username,create_time , state )
+        	VALUES
+        	(#{oid},#{eid},#{username},now() ,'1')
+        </when>
+        <otherwise>
+            INSERT INTO
+        	`t_test_housekeeper`
+        	(oid,eid,username,create_time , state )
+        	VALUES
+        	(#{oid},#{eid},#{username},now() ,'1')
+        </otherwise>
+    </choose>	
+   </insert>
+   
+   <!-- 修改考试结果 -->
+   <update id="editresult" >
+   <choose>
+        <when test="usertype !=null and usertype == 'EMPLOYER'">
+        
+            update `t_test_employer`
+            <set>
+	    		oid=#{oid},
+	    		eid=#{eid},
+	    		username=#{username},
+	    		update_time=now()
+	    	</set>
+        	where teid=#{id}
+        	
+        </when>
+        
+        <otherwise>
+            update `t_test_housekeeper`
+            <set>
+	    		oid=#{oid},
+	    		eid=#{eid},
+	    		username=#{username},
+	    		update_time=now()
+	    	</set>
+        	where thid=#{id}
+        </otherwise>
+    </choose>	
+    </update>
+    
+    <!-- 删除考试结果 -->
+    <update id="deleteresult" >
+   <choose>
+        <when test="usertype !=null and usertype == 'EMPLOYER'">
+        
+            update `t_test_employer`
+            <set>
+	    		state="0",
+	    		update_time=now()
+	    	</set>
+        	where teid=#{id}
+        	
+        </when>
+        
+        <otherwise>
+            update `t_test_housekeeper`
+            <set>
+	    		state="0",
+	    		update_time=now()
+	    	</set>
+        	where thid=#{id}
+        </otherwise>
+    </choose>	
+    </update>
+    
+    
+    <!-- 新增试题   t_test_exam-->
+	<insert id="addexamcommon" parameterType="yinao.qualityLife.model.domain.ExamAdd">
+	
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="eid">
+          SELECT LAST_INSERT_ID()
+      	</selectKey>
+	
+		INSERT INTO
+        	`t_test_exam`
+        	(ccid,name,examtype,score , create_time , sort )
+        	VALUES
+        	(#{ccid},#{name},#{examtype},#{score},now() ,#{sort})
+   </insert>
+   
+   <!-- 新增试题   t_test_options-->
+	<insert id="addexamoption" parameterType="yinao.qualityLife.model.domain.ExamOption">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="oid">
+          SELECT LAST_INSERT_ID()
+      	</selectKey>
+	
+		INSERT INTO
+        	`t_test_exam_option`
+        	(eid,option_name,option_des,create_time)
+        	VALUES
+        	(#{eid},#{name},#{content},now())
+   </insert>
+   
+   <!-- 新增试题   t_test_answer-->
+	<insert id="addexamanswer" >
+		INSERT INTO
+        	`t_test_exam_answer`
+        	(eid,oid,create_time)
+        	VALUES
+        	(#{eid},#{oid},now())
+   </insert>
+   
+   
+   
+   <!-- 编辑试题  编辑基础表 -->
+   <update id="editexamcommon" parameterType="yinao.qualityLife.model.domain.ExamAdd">
+		update `t_test_exam`
+            <set>
+	    		ccid=#{ccid},
+	    		name=#{name},
+	    		examtype=#{examtype},
+	    		score=#{score},
+	    		sort=#{sort},
+	    		update_time=now()
+	    	</set>
+        	where eid=#{eid}
+    </update>
+    
+    <!-- 删除选项表 -->
+    <delete id="deleteoption">
+    	delete from `t_test_exam_option`
+    	where eid=#{eid}
+    </delete>
+    
+    <!-- 删除答案表 -->
+    <delete id="deleteanswer">
+    	delete from `t_test_exam_answer`
+    	where eid=#{eid}
+    </delete>
+    
+   <!-- 删除基础表 -->
+    <delete id="deleteexam">
+    	delete from `t_test_exam`
+    	where eid=#{eid}
+    </delete>
+    
+    <resultMap id="getUseCcidCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+        <id column="count" property="count"/>
+    </resultMap>
+    
+    <select id="getUseCcidCount"  resultMap="getUseCcidCount">
+		SELECT
+		count(*) as count 
+		FROM
+    		t_test_exam
+		WHERE
+			ccid=#{ccid}
+	</select>
+	
+	<resultMap id="getEidByCcid" type="yinao.qualityLife.model.domain.Eid">
+        <id column="eid" property="eid"/>
+        <result column="score" property="score"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    
+    <select id="getEidByCcid"  resultMap="getEidByCcid">
+		SELECT
+			`t_test_exam`.eid,
+			`t_test_exam`.score,
+			`t_test_coursecatagory`.name
+		FROM
+    		`t_test_exam`,
+    		`t_test_coursecatagory`
+		WHERE
+			t_test_exam.ccid = t_test_coursecatagory.ccid
+			and t_test_exam.ccid=#{ccid}
+	</select>
+	
+	<resultMap id="getAnsewerCompareList" type="yinao.qualityLife.model.domain.AnsewerCompare">
+        <id column="eid" property="eid"/>
+        <result column="score" property="score"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    
+    <select id="getAnsewerCompareList"  resultMap="getAnsewerCompareList">
+		SELECT
+			`t_test_exam_answer`.eid,
+			`t_test_exam_answer`.oid as true_oid ,
+			`t_test_housekeeper`.oid as user_oid ,
+			`t_test_housekeeper`.username,
+			`t_test_housekeeper`.create_time,
+			`t_test_housekeeper`.state
+		FROM
+    		`t_test_exam_answer`,
+    		`t_test_housekeeper`
+		WHERE
+			t_test_exam_answer.eid = t_test_housekeeper.eid
+			and t_test_housekeeper.eid=#{eid}
+			and t_test_housekeeper.username=#{username}
+			and t_test_housekeeper.state = 1
+	</select>
+	
+	
+	
+	<!-- 用户删除考试结果 -->
+    <update id="deleteresultUser" >
+   <choose>
+        <when test="usertype !=null and usertype == 'EMPLOYER'">
+        
+            update `t_test_employer`
+            <set>
+	    		state="0",
+	    		update_time=now()
+	    	</set>
+        	where eid=#{eid}
+        	and username = #{username}
+        </when>
+        
+        <otherwise>
+            update `t_test_housekeeper`
+            <set>
+	    		state="0",
+	    		update_time=now()
+	    	</set>
+        	where eid=#{eid}
+        	and username = #{username}
+        </otherwise>
+    </choose>
+    </update>
+	
+	    <!-- 获取小程序试题不带答案的随机结果集 -->
+    <select id="getLabelList"  resultMap="getUserFromDatabaseMap">
+    SELECT   `t_test_exam`.label
+	FROM 
+		`t_test_exam`
+    WHERE 	
+		 `t_test_exam`.state=1
+       	 and `t_test_exam`.ccid = #{ccid}  
+	GROUP BY `t_test_exam`.label
+	</select>
+
+
+</mapper>

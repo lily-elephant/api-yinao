@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.employerMapper">
+
+	<resultMap id="getUserFromDatabaseMap" type="yinao.qualityLife.model.domain.Employer">
+		<id column="emid" property="emid"/>
+		<result column="name" property="name"/>
+		<result column="username" property="username"/>
+		<result column="password" property="password"/>
+		<result column="headimageurl" property="headimageurl"/>
+		<result column="idcard" property="idcard"/>
+		<result column="education" property="education"/>
+		<result column="age" property="age"/>
+		<result column="sex" property="sex"/>  
+		<result column="address1" property="address1"/>
+		<result column="address2" property="address2"/>
+		<result column="address3" property="address3"/>
+		<result column="creat_at" property="creat_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/>
+		<result column="role_id" property="role_id"/>
+		<result column="servicestate" property="servicestate"/>
+		<result column="state" property="state"/>	
+		<result column="addresslabel" property="addresslabel"/>
+		<result column="roomarea" property="roomarea"/>
+		<result column="courtarea" property="courtarea"/>
+		<result column="bedroom" property="bedroom"/>
+		<result column="restaurant" property="restaurant"/>
+		<result column="washroom" property="washroom"/>
+		<result column="peoplecount" property="peoplecount"/>
+		<result column="oldcount" property="oldcount"/>
+		<result column="childcount" property="childcount"/>
+		<result column="describes" property="describes"/>
+	</resultMap>
+ 	
+ 	<!-- 雇主信息列表 -->
+    <select id="getEmployerInfo" resultMap="getUserFromDatabaseMap">
+    	SELECT * FROM `t_base_employer` 
+        <where>
+        	<if test="username != null and username != ''">
+        		and username like CONCAT('%',#{username},'%')
+        	</if>
+        	<if test="name != null and name != ''">
+        		and name like CONCAT('%',#{name},'%')
+        	</if>
+        	<if test="servicestate != null and servicestate != ''">
+        		and servicestate = #{servicestate}
+        	</if>
+        </where>       
+    </select>
+    
+	<!-- 编辑雇主信息 -->  
+	<update id="updateEmployerInfo" >
+  		update t_base_employer
+	    <set>
+			<if test="name != null and name != ''">name=#{name},</if> 
+			<if test="idcard != null and idcard != ''">idcard=#{idcard},</if>
+			<if test="education != null and education != ''">education=#{education},</if>
+			<if test="address1 != null and address1 != ''">address1=#{address1},</if>
+			<if test="address2 != null and address2 != ''">address2=#{address2},</if>
+			<if test="address3 != null and address3 != ''">address3=#{address3},</if>
+			<if test="headimageurl != null and headimageurl != ''">headimageurl=#{headimageurl},</if>
+			<if test="servicestate != null and servicestate != ''">servicestate=#{servicestate},</if>
+			<if test="addresslabel != null and addresslabel != ''">addresslabel=#{addresslabel},</if> 
+			<if test="roomarea != null and roomarea != ''">roomarea=#{roomarea},</if> 
+			<if test="courtarea != null and courtarea != ''">courtarea=#{courtarea},</if> 
+			<if test="bedroom != null and bedroom != ''">bedroom=#{bedroom},</if> 
+			<if test="restaurant != null and restaurant != ''">restaurant=#{restaurant},</if> 
+			<if test="washroom != null and washroom != ''">washroom=#{washroom},</if> 
+			<if test="peoplecount != null and peoplecount != ''">peoplecount=#{peoplecount},</if> 
+			<if test="oldcount != null and oldcount != ''">oldcount=#{oldcount},</if> 
+			<if test="childcount != null and childcount != ''">childcount=#{childcount},</if> 
+			<if test="describes != null and describes != ''">describes=#{describes},</if> 
+			<if test="sex != null and sex != ''">sex=#{sex},</if>
+	    </set>
+  		where username=#{username}
+	</update>
+	
+	<update id="deleteEmployer" >
+  		update t_base_employer
+  		<set>
+	    state=#{state}
+	    </set>
+  		where username=#{username}
+	</update>
+	
+
+    
+</mapper>

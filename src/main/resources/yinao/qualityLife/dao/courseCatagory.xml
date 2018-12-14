@@ -1,0 +1,1054 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.courseCatagoryMapper">
+	<!-- 获取课程模块列表 -->
+	<resultMap id="getUserFromDatabaseMap" type="yinao.qualityLife.model.domain.CourseCatagory">
+		<id column="ccid" property="ccid"/>
+		<result column="name" property="name"/>
+		<result column="description" property="description"/>
+		<result column="sort" property="sort"/>
+		<result column="ismust" property="ismust"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getCourseCatagoryList" resultMap="getUserFromDatabaseMap">
+    	SELECT
+			`t_test_coursecatagory`.ccid,
+			`t_test_coursecatagory`.name,
+			`t_test_coursecatagory`.description,
+			`t_test_coursecatagory`.create_time,
+			`t_test_coursecatagory`.update_time,
+			`t_source_picture`.path as picture,
+			`t_test_coursecatagory`.ismust,
+			`t_test_coursecatagory`.sort,
+			`t_test_coursecatagory`.discount,
+			SUM(t_test_course.money) as price
+		FROM t_test_coursecatagory LEFT JOIN t_test_course ON  t_test_coursecatagory.ccid=t_test_course.ccid 
+							LEFT JOIN t_source_picture ON t_source_picture.pid =t_test_coursecatagory.picture
+							LEFT JOIN t_source_article ON t_source_article.aid =t_test_coursecatagory.aid  
+		 WHERE
+		 	 t_test_coursecatagory.state=1
+ 	  		 and t_test_coursecatagory.ccid &gt;0
+		 	 and t_source_picture.state=1
+		 	 and t_source_article.state=1
+		 GROUP BY
+			`t_test_coursecatagory`.ccid
+		ORDER BY 
+			`t_test_coursecatagory`.sort desc,`t_test_coursecatagory`.update_time desc
+		LIMIT #{offset},#{pageSize}
+    </select>
+    
+    <resultMap id="getCourseCatagoryCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	
+	</resultMap>
+ 	
+ 	<!-- 获取课程模块总纪录数 -->
+    <select id="getCourseCatagoryCount" resultMap="getCourseCatagoryCount">
+    	SELECT
+			count(*) as count
+		FROM t_test_coursecatagory LEFT JOIN t_source_picture ON t_source_picture.pid =t_test_coursecatagory.picture
+							LEFT JOIN t_source_article ON t_source_article.aid =t_test_coursecatagory.aid  
+		 WHERE
+		 	 t_test_coursecatagory.state=1
+ 	  		 and t_test_coursecatagory.ccid &gt;0
+		 	 and t_source_picture.state=1
+		 	 and t_source_article.state=1
+		
+    </select>
+    
+     <!-- 获取课程列表 -->
+    <resultMap id="getCourseListFromDatabaseMap" type="yinao.qualityLife.model.domain.Courses">
+		<id column="cid" property="cid"/>
+		<result column="name" property="name"/>
+		<result column="brief" property="brief"/>
+		<result column="ismust" property="ismust"/>		
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getCourseList" resultMap="getCourseListFromDatabaseMap">
+    	SELECT
+			`t_test_course`.cid,
+			`t_test_course`.name,
+			`t_test_course`.brief,
+			`t_test_course`.money,
+			`t_test_course`.ismust,
+			`t_test_course`.sort,
+			`t_test_course`.viewcount,
+			`t_source_picture`.path as coursepicture,
+			`t_test_course`.create_time,
+			`t_test_course`.update_time,
+			`t_source_video`.path as video,
+			`t_source_article`.content as article,
+			`t_test_coursecatagory`.name as catagoryname
+			
+		FROM t_test_course LEFT JOIN t_test_coursecatagory ON  t_test_coursecatagory.ccid=t_test_course.ccid 
+						   LEFT JOIN t_source_video ON  t_source_video.vid=t_test_course.vid 
+						   LEFT JOIN t_source_article ON  t_source_article.aid=t_test_course.aid 
+						   LEFT JOIN t_source_picture ON  t_source_picture.pid=t_test_course.coursepicture 
+		 WHERE
+			t_test_course.state=1
+			and  t_test_coursecatagory.state=1
+			 and t_test_coursecatagory.ccid &gt;0
+			and  t_source_video.state=1
+			and  t_source_article.state=1
+			and  t_source_picture.state=1
+		 	<if test="ccid != null and ccid != ''">
+		 		and t_test_course.ccid=#{ccid}
+		 	</if>
+		ORDER BY 
+			`t_test_course`.cid desc,`t_test_course`.update_time desc
+		LIMIT #{offset},#{pageSize}
+		
+    </select>
+    <!-- 获取课程列表纪录条数 -->
+     <resultMap id="getCourseCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getCourseCount" resultMap="getCourseCount">
+    	SELECT
+			count(*) as count
+		FROM t_test_course LEFT JOIN t_test_coursecatagory ON  t_test_coursecatagory.ccid=t_test_course.ccid 
+						   LEFT JOIN t_source_video ON  t_source_video.vid=t_test_course.vid 
+						   LEFT JOIN t_source_article ON  t_source_article.aid=t_test_course.aid 
+						   LEFT JOIN t_source_picture ON  t_source_picture.pid=t_test_course.coursepicture 
+		 WHERE
+			t_test_course.state=1
+			and  t_test_coursecatagory.state=1
+			and  t_source_video.state=1
+			and  t_source_article.state=1
+			and  t_source_picture.state=1
+		 	<if test="ccid != null and ccid != ''">
+		 		and t_test_course.ccid=#{ccid}
+		 	</if>
+    </select>
+    
+    <insert id="addCourseCatagory"   >
+    	INSERT INTO
+        	`t_test_coursecatagory`
+        	(name,sort,description,ismust,picture,discount,create_at,create_time,update_time,aid)
+        	VALUES
+        	(#{name}, #{sort},#{description},#{ismust},#{picture},#{discount},#{create_at}, now() , now(),#{aid})
+   </insert>
+   
+    <update id="editCourseCatagory" >
+ 		update `t_test_coursecatagory` 
+ 		<set>
+ 			name=#{name},
+ 			description=#{description},
+ 			ismust=#{ismust},
+ 			sort=#{sort},
+ 			picture=#{picture},
+ 			aid=#{aid},
+ 			<if test="discount != null and discount != ''">
+		 		discount=#{discount},
+		 	</if>
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where ccid=#{ccid}
+	</update>
+	
+	 <update id="deleteCourseCatagory" >
+ 		update `t_test_coursecatagory` 
+ 		<set>
+ 			update_at=#{update_at},
+ 			state=0,
+ 			update_time=now()
+ 		</set>
+ 			where ccid=#{ccid}
+	</update>
+	
+ 	<insert id="addCourse"   >
+    	INSERT INTO
+        	`t_test_course`
+        	(name,sort,money,brief,ismust,create_at,create_time,update_time,vid,aid,ccid,coursepicture)
+        	VALUES
+        	(#{name}, #{sort},#{money},#{brief},#{ismust},#{create_at}, now() , now(),#{vid},#{aid},#{ccid},#{coursepicture})
+   </insert>
+   <update id="editCourse" >
+ 		update `t_test_course` 
+ 		<set>
+ 			name=#{name},
+ 			money=#{money},
+ 			brief=#{brief},
+ 			ccid=#{ccid},
+ 			vid=#{vid},
+ 			aid=#{aid},
+ 			ismust=#{ismust},
+ 			coursepicture=#{coursepicture},
+ 			sort=#{sort},
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where cid=#{cid}
+	</update>
+
+   <update id="deleteCourse" >
+ 		update `t_test_course` 
+ 		<set>
+ 			update_at=#{update_at},
+ 			state=0,
+ 			update_time=now()
+ 		</set>
+ 			where cid=#{cid}
+	</update>
+	 <!-- 获取我的课程列表纪录条数 -->
+     <resultMap id="getMyCourseCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getMyCourseCount" resultMap="getMyCourseCount">
+    	SELECT
+			count(*) as count
+		FROM t_test_course LEFT JOIN t_test_coursecatagory ON  t_test_coursecatagory.ccid=t_test_course.ccid 
+						   LEFT JOIN t_order_course ON  t_order_course.cid=t_test_course.cid 
+						   LEFT JOIN t_source_video ON  t_source_video.vid=t_test_course.vid 
+						   LEFT JOIN t_source_article ON  t_source_article.aid=t_test_course.aid 
+						   LEFT JOIN t_source_picture ON  t_source_picture.pid=t_test_course.coursepicture 
+		 WHERE
+		 	t_test_course.state=1
+		 	and  t_test_coursecatagory.state=1
+		 	and  t_order_course.state=1
+		 	and  t_source_video.state=1
+		 	and  t_source_article.state=1
+		 	and  t_source_picture.state=1
+		 	and t_test_course.ccid=#{ccid}
+		 	and t_order_course.hkid=#{hkid}
+    </select>
+        
+    <!-- 获取我的课程列表 -->
+    <resultMap id="getMyCourseList" type="yinao.qualityLife.model.domain.MyCourse">
+		<id column="cid" property="cid"/>
+		<result column="name" property="name"/>
+		<result column="brief" property="brief"/>
+		<result column="ismust" property="ismust"/>		
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getMyCourseList" resultMap="getMyCourseList">
+    	SELECT
+			`t_test_course`.cid,
+			`t_test_course`.name,
+			`t_test_course`.brief,
+			`t_test_course`.money,
+			`t_test_course`.ismust,
+			`t_order_course`.isbuy,
+			`t_test_course`.ccid,
+			`t_order_course`.hkid,
+			`t_source_picture`.path as coursepicture,
+			`t_test_course`.create_time,
+			`t_test_course`.update_time,
+			`t_source_video`.path as video,
+			`t_source_article`.content as article
+			
+		FROM t_test_course LEFT JOIN t_test_coursecatagory ON  t_test_coursecatagory.ccid=t_test_course.ccid 
+						   LEFT JOIN t_order_course ON  t_order_course.cid=t_test_course.cid 
+						   LEFT JOIN t_source_video ON  t_source_video.vid=t_test_course.vid 
+						   LEFT JOIN t_source_article ON  t_source_article.aid=t_test_course.aid 
+						   LEFT JOIN t_source_picture ON  t_source_picture.pid=t_test_course.coursepicture
+		 	t_test_course.state=1
+		 	and  t_test_coursecatagory.state=1
+		 	and  t_order_course.state=1
+		 	and  t_source_video.state=1
+		 	and  t_source_article.state=1
+		 	and  t_source_picture.state=1
+		 	and t_test_course.ccid=#{ccid}
+		 	and t_order_course.hkid=#{hkid}
+		ORDER BY 
+			`t_order_course`.ocid desc
+		LIMIT #{offset},#{pageSize}
+   </select>
+    <!-- 获取家政hkid -->
+    <resultMap id="getHkid" type="yinao.qualityLife.model.domain.GetHkid">
+		<id column="hkid" property="hkid"/>
+	</resultMap>
+    <select id="getHkid" resultMap="getHkid">
+    	SELECT
+			`t_base_housekeeper`.hkid	
+		FROM 
+			 `t_base_housekeeper`
+		 WHERE
+		 	t_base_housekeeper.username=#{username}
+   </select>
+   	 <!-- 获取家政是否购买该课程 -->
+     <resultMap id="getOrderCourseCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getOrderCourseCount" resultMap="getOrderCourseCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_order_course`
+		WHERE
+		 	t_order_course.cid=#{cid}
+		 	and t_order_course.state=1
+		 	and t_order_course.isbuy=0
+		 	and t_order_course.hkid=#{hkid}
+    </select>
+    <!-- 获取课程模块详情 -->
+    <resultMap id="getCourseCatagoryDetail" type="yinao.qualityLife.model.domain.CourseCatagory">
+		<id column="ccid" property="ccid"/>
+		<result column="name" property="name"/>
+		<result column="description" property="description"/>
+		<result column="sort" property="sort"/>
+		<result column="ismust" property="ismust"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getCourseCatagoryDetail" resultMap="getCourseCatagoryDetail">
+    	SELECT
+			`t_test_coursecatagory`.ccid,
+			`t_test_coursecatagory`.name,
+			`t_test_coursecatagory`.description,
+			`t_test_coursecatagory`.create_time,
+			`t_test_coursecatagory`.update_time,
+			`t_source_picture`.name as picturename,
+			`t_source_picture`.path as picture,
+			`t_source_article`.content as articlecontent,
+			`t_source_article`.name as articlename,
+			`t_source_picture`.pid as pictureid,
+			`t_test_coursecatagory`.ismust,
+			`t_test_coursecatagory`.sort,
+			`t_test_coursecatagory`.aid,
+			`t_test_coursecatagory`.discount,
+			count(*) as courseCount
+		FROM 
+			`t_test_coursecatagory`,
+			 `t_test_course`,
+			 `t_source_picture`,
+			  `t_source_article`
+		 WHERE
+		 	t_test_coursecatagory.ccid=t_test_course.ccid
+		 	and t_test_coursecatagory.picture=t_source_picture.pid
+		 	and t_test_coursecatagory.aid=t_source_article.aid
+		 	and t_test_coursecatagory.state=1
+		 	and t_test_course.state=1
+		 	and t_source_picture.state=1
+		 	and t_test_coursecatagory.ccid=#{ccid}
+		
+    </select>
+     
+     <!-- 获取课程详情 -->
+    <resultMap id="getCourseDetail" type="yinao.qualityLife.model.domain.Courses">
+		<id column="cid" property="cid"/>
+		<result column="name" property="name"/>
+		<result column="brief" property="brief"/>
+		<result column="ismust" property="ismust"/>		
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getCourseDetail" resultMap="getCourseDetail">
+    	SELECT
+			`t_test_course`.cid,
+			`t_test_course`.ccid,
+			`t_test_course`.name,
+			`t_test_course`.brief,
+			`t_test_course`.money,
+			`t_test_course`.ismust,
+			`t_test_course`.sort,
+			`t_test_course`.coursepicture as pictureid,
+			`t_source_picture`.path as coursepicture,
+			`t_test_course`.viewcount,
+			`t_test_course`.create_time,
+			`t_test_course`.update_time,
+			`t_source_video`.path as video,
+			`t_source_video`.name as videoname,
+			`t_source_article`.name as articlename,
+			`t_source_video`.vid,
+			`t_source_article`.aid,
+			`t_source_article`.content as article,
+			`t_source_picture`.name as picturename,
+			`t_test_coursecatagory`.name as catagoryname,
+			count(*) as ordercount		
+		FROM t_test_course LEFT JOIN t_test_coursecatagory ON  t_test_coursecatagory.ccid=t_test_course.ccid 
+						   LEFT JOIN t_order_course ON  t_order_course.cid=t_test_course.cid 
+						   LEFT JOIN t_source_video ON  t_source_video.vid=t_test_course.vid 
+						   LEFT JOIN t_source_article ON  t_source_article.aid=t_test_course.aid 
+						   LEFT JOIN t_source_picture ON  t_source_picture.pid=t_test_course.coursepicture 
+		 WHERE
+		 	
+		 	t_test_course.state=1
+		 	and  t_test_coursecatagory.state=1
+		 	and  t_order_course.isbuy=0
+		 	and  t_source_video.state=1
+		 	and  t_source_article.state=1
+		 	and  t_source_picture.state=1
+		 	and t_test_course.cid=#{cid}
+		
+    </select>
+    <!-- 浏览量自增 -->
+    <update id="addViewCount" >
+ 		update `t_test_course` 
+ 		<set>
+ 			viewcount=viewcount+1,
+ 			update_time=now()
+ 		</set>
+ 			where cid=#{cid}
+	</update>
+	<!-- 课程模块考试单选总数 -->
+	 <resultMap id="getSingleCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getSingleCount" resultMap="getSingleCount">
+    	SELECT
+			count(distinct(`t_test_exam`.label)) as count
+		FROM 
+			`t_test_coursecatagory`,
+			`t_test_exam`
+		WHERE
+		 	t_test_coursecatagory.ccid=t_test_exam.ccid
+		 	and t_test_coursecatagory.state=1
+		 	and t_test_exam.state=1
+		 	and t_test_exam.examtype='SINGLE'
+		 	and t_test_coursecatagory.ccid=#{ccid}
+    </select>
+    <!-- 课程模块考试多选总数 -->
+	 <resultMap id="getMultipleCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getMultipleCount" resultMap="getMultipleCount">
+    SELECT
+			count(distinct(`t_test_exam`.label)) as count
+		FROM 
+			`t_test_coursecatagory`,
+			`t_test_exam`
+		WHERE
+		 	t_test_coursecatagory.ccid=t_test_exam.ccid
+		 	and t_test_coursecatagory.state=1
+		 	and t_test_exam.state=1
+		 	and t_test_exam.examtype='MULTIPLE'
+		 	and t_test_coursecatagory.ccid=#{ccid}
+    </select>
+    <!-- 查找购买课程所属模块 -->
+	<resultMap id="gettestCourseCatagory" type="yinao.qualityLife.model.domain.CourseCatagory">
+		<id column="ccid" property="ccid"/>
+		<result column="name" property="name"/>
+	</resultMap>
+    <select id="gettestCourseCatagory" resultMap="gettestCourseCatagory">
+    	SELECT
+			`t_test_coursecatagory`.ccid,
+			`t_test_coursecatagory`.name
+		FROM 
+			`t_order_course`,
+		 	`t_test_course`,
+		  	`t_test_coursecatagory`
+		 WHERE
+		 	t_order_course.cid=t_test_course.cid
+	 	  	and t_test_coursecatagory.ccid=t_test_course.ccid
+		 	and t_test_coursecatagory.state=1
+		 	and t_test_course.state=1
+		 	and t_order_course.state=1
+		 	and t_order_course.isbuy=0
+		 	and t_order_course.hkid=#{hkid}
+		 GROUP BY
+			`t_test_coursecatagory`.ccid
+    </select>
+    <!-- 查找已购买模块下课程的总数 -->
+	<resultMap id="getOrderCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getOrderCount" resultMap="getOrderCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_order_course`,
+		 	`t_test_course`,
+		  	`t_test_coursecatagory`
+		 WHERE
+		 	t_order_course.cid=t_test_course.cid
+	 	  	and t_test_coursecatagory.ccid=t_test_course.ccid
+		 	and t_test_coursecatagory.state=1
+		 	and t_test_course.state=1
+		 	and t_test_course.money &gt;0
+		 	and t_order_course.state=1
+		 	and t_order_course.isbuy=0
+		 	and t_test_course.ccid=#{ccid}
+		 	<if test="hkid != null and hkid != ''">
+		 		and t_order_course.hkid=#{hkid}
+		 	</if>
+    </select>
+     <!-- 查找模块下课程的总数 -->
+	<resultMap id="getCatagoryCourseCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getCatagoryCourseCount" resultMap="getCatagoryCourseCount">
+    	SELECT
+			count(*) as count
+		FROM 
+		 	`t_test_course`,
+		  	`t_test_coursecatagory`
+		 WHERE
+		 	t_test_coursecatagory.ccid=t_test_course.ccid
+		 	and t_test_coursecatagory.state=1
+		 	and t_test_course.state=1
+		 	and t_test_course.ccid=#{ccid}
+    </select>
+     <!-- 查找购买课程所属模块 -->
+	<resultMap id="gettestCatagory" type="yinao.qualityLife.model.domain.CourseCatagory">
+		<id column="ccid" property="ccid"/>
+		<result column="name" property="name"/>
+	</resultMap>
+    <select id="gettestCatagory" resultMap="gettestCatagory">
+    	SELECT
+			`t_test_coursecatagory`.ccid,
+			`t_test_coursecatagory`.name
+		FROM 
+		  	`t_test_coursecatagory`
+		 WHERE
+	     <if test="ccidArray.size() > 0">
+	     	ccid 
+				IN
+				<foreach collection="ccidArray" index="index" item="ccid" open="(" separator="," close=")">  
+				     #{ccid}  
+				 </foreach>
+				 and t_test_coursecatagory.state=1
+			 	 and t_test_coursecatagory.ismust=1
+			 	 or t_test_coursecatagory.ismust=0
+			 	and t_test_coursecatagory.state=1 
+   		</if>
+   		<if test="ccidArray.size() ==0">
+     		t_test_coursecatagory.ismust=0
+		 	and t_test_coursecatagory.state=1
+   		</if>
+    </select>
+     <!-- 获取模块下试题的总数 -->
+     <resultMap id="getExamCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getExamCount" resultMap="getExamCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_test_exam`
+		WHERE
+		 	t_test_exam.ccid=#{ccid}
+    </select>
+     <!-- 核对模块下是否有试题 -->
+     <resultMap id="getUseCcidCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getUseCcidCount" resultMap="getUseCcidCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_test_exam`
+		WHERE
+		 	t_test_exam.ccid=#{ccid}
+    </select>
+    	<!-- 课程模块下拉框 -->
+	<resultMap id="selectCourseCatagory" type="yinao.qualityLife.model.domain.CourseCatagory">
+		<id column="ccid" property="ccid"/>
+		<result column="name" property="name"/>
+	</resultMap>
+	 <select id="selectCourseCatagory" resultMap="selectCourseCatagory">
+    	SELECT
+			`t_test_coursecatagory`.ccid,
+			`t_test_coursecatagory`.name,
+			`t_test_coursecatagory`.ismust	
+		FROM 
+			`t_test_coursecatagory`
+		 WHERE
+		 	t_test_coursecatagory.state=1
+		 	and t_test_coursecatagory.ccid &gt;0
+    </select>
+    <!-- 搜索课程模块列表 -->
+	<resultMap id="serachCourseCatagoryList" type="yinao.qualityLife.model.domain.CourseCatagory">
+		<id column="ccid" property="ccid"/>
+		<result column="name" property="name"/>
+		<result column="description" property="description"/>
+		<result column="sort" property="sort"/>
+		<result column="ismust" property="ismust"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="serachCourseCatagoryList" resultMap="serachCourseCatagoryList">
+    	SELECT
+			`t_test_coursecatagory`.ccid,
+			`t_test_coursecatagory`.name,
+			`t_test_coursecatagory`.description,
+			`t_test_coursecatagory`.create_time,
+			`t_test_coursecatagory`.update_time,
+			`t_test_coursecatagory`.discount,
+			`t_source_picture`.path as picture,
+			`t_test_coursecatagory`.ismust,
+			SUM(t_test_course.money) as price
+		FROM t_test_coursecatagory 
+			LEFT JOIN t_test_course ON  t_test_coursecatagory.ccid=t_test_course.ccid 
+			LEFT JOIN t_source_picture ON t_source_picture.pid =t_test_coursecatagory.picture
+			LEFT JOIN t_source_article ON t_source_article.aid =t_test_coursecatagory.aid 	
+		 WHERE
+		 	 t_test_coursecatagory.state=1
+		 	 and  t_source_article.state=1
+		 	 and  t_source_picture.state=1
+		 	  and t_test_coursecatagory.ccid &gt;0
+	    AND t_test_coursecatagory.name like CONCAT('%',#{name},'%') 
+		 GROUP BY
+			`t_test_coursecatagory`.ccid
+		ORDER BY 
+			`t_test_coursecatagory`.sort desc,`t_test_coursecatagory`.update_time desc
+		LIMIT #{offset},#{pageSize}
+    </select>
+    
+    <resultMap id="seachCourseCatagoryCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	
+	</resultMap>
+ 	
+ 	<!-- 获取课程模块总纪录数 -->
+    <select id="seachCourseCatagoryCount" resultMap="seachCourseCatagoryCount">
+    	SELECT count(*) as count
+		FROM t_test_coursecatagory LEFT JOIN t_source_picture ON t_source_picture.pid =t_test_coursecatagory.picture
+			LEFT JOIN t_source_article ON t_source_article.aid =t_test_coursecatagory.aid 	
+		 WHERE
+		 	 t_test_coursecatagory.state=1
+		 	 and  t_source_article.state=1
+		 	 and  t_source_picture.state=1
+		 	  and t_test_coursecatagory.ccid &gt;0
+	    AND t_test_coursecatagory.name like CONCAT('%',#{name},'%') 
+	     GROUP BY
+			`t_test_coursecatagory`.ccid
+    </select>
+      
+     <!-- 获取后台课程列表 -->
+    <resultMap id="getAdminCourseList" type="yinao.qualityLife.model.domain.Courses">
+		<id column="cid" property="cid"/>
+		<result column="name" property="name"/>
+		<result column="brief" property="brief"/>
+		<result column="ismust" property="ismust"/>		
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getAdminCourseList" resultMap="getAdminCourseList">
+    	SELECT
+			`t_test_course`.cid,
+			`t_test_course`.name,
+			`t_test_course`.brief,
+			`t_test_course`.money,
+			`t_test_course`.ismust,
+			`t_test_course`.sort,
+			`t_test_course`.viewcount,
+			`t_test_course`.coursepicture,
+			`t_test_course`.create_time,
+			`t_test_course`.update_time,
+			`t_source_video`.path as video,
+			`t_source_article`.content as article,
+			`t_test_coursecatagory`.name as catagoryname
+			
+		FROM 
+			 `t_test_course`,
+			 `t_source_video`,
+			 `t_source_article`,
+			  `t_source_picture`,
+			  `t_test_coursecatagory`
+		 WHERE
+		 	t_test_course.vid=t_source_video.vid
+		 	and t_test_course.aid=t_source_article.aid
+		 	and t_test_course.coursepicture=t_source_picture.pid
+		 	and t_test_course.ccid=t_test_coursecatagory.ccid
+		 	and t_test_course.state=1
+		 	and t_source_video.state=1
+		 	and t_source_article.state=1
+		 	and t_source_picture.state=1
+		 	and t_test_coursecatagory.state=1
+		 	<if test="ccid != null and ccid != ''">
+		 		and t_test_course.ccid=#{ccid}
+		 	</if>
+		 	<if test="name != null and name != ''">
+		 		AND t_test_course.name like CONCAT('%',#{name},'%')
+		 	</if>
+		ORDER BY 
+			`t_test_course`.cid desc,`t_test_course`.update_time desc
+		LIMIT #{offset},#{pageSize}	
+    </select>
+    <!-- 获取课程列表纪录条数 -->
+     <resultMap id="getAdminCourseCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getAdminCourseCount" resultMap="getAdminCourseCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			 `t_test_course`,
+			 `t_source_video`,
+			 `t_source_picture`,
+			 `t_source_article`,
+			  `t_test_coursecatagory`
+		 WHERE
+		 	t_test_course.vid=t_source_video.vid
+		 	and t_test_course.aid=t_source_article.aid
+		 	and t_test_course.coursepicture=t_source_picture.pid
+		 	and t_test_course.ccid=t_test_coursecatagory.ccid
+		 	and t_test_course.state=1
+		 	and t_source_video.state=1
+		 	and t_source_article.state=1
+		 	and t_source_picture.state=1
+		 	and t_test_coursecatagory.state=1
+		 	<if test="ccid != null and ccid != ''">
+		 		and t_test_course.ccid=#{ccid}
+		 	</if>
+		 	<if test="name != null and name != ''">
+		 		AND t_test_course.name like CONCAT('%',#{name},'%')
+		 	</if>
+    </select>
+     <!-- 获取雇主emid -->
+    <resultMap id="getEmid" type="yinao.qualityLife.model.domain.GetHkid">
+		<id column="hkid" property="hkid"/>
+	</resultMap>
+    <select id="getEmid" resultMap="getEmid">
+    	SELECT
+			`t_base_employer`.emid as hkid
+		FROM 
+			 `t_base_employer`
+		 WHERE
+		 	t_base_employer.username=#{username}
+		 	
+   </select>
+    <!-- 获取课程模块下的所有课程id -->
+    <resultMap id="getCid" type="yinao.qualityLife.model.domain.GetHkid">
+		<id column="hkid" property="hkid"/>
+	</resultMap>
+    <select id="getCid" resultMap="getCid">
+    	SELECT
+			`t_test_course`.cid as hkid
+		FROM 
+			 `t_test_course`,
+			 `t_source_video`,
+			 `t_source_article`,
+			 `t_source_picture`
+		 WHERE
+			 t_test_course.vid=t_source_video.vid
+		 	and t_test_course.aid=t_source_article.aid
+		 	and t_test_course.coursepicture=t_source_picture.pid
+		 	and t_test_course.state=1
+		 	and t_source_video.state=1
+		 	and t_source_article.state=1
+		 	and t_source_picture.state=1
+		 	and t_test_course.ccid=#{ccid}
+		 	
+   </select>
+   <!--向employ订单表里插入订单  -->
+    <insert id="addEmployOrder"   >
+    	INSERT INTO
+        	`t_bill_employer`
+        	(emid,billno,paytype,payflag,money,transactionid,businesstype,create_time,update_time,osid)
+        	VALUES
+        	(#{emid}, #{orderNo},"wxxcx","0",#{money},#{transactionid},#{businesstype}, now() , now(),#{osid})
+   </insert>
+   <!--向housekeep订单表里插入订单  -->
+    <insert id="addHouseKeepOrder"   >
+    	INSERT INTO
+        	`t_bill_housekeeper`
+        	(hkid,billno,paytype,payflag,money,transactionid,businesstype,create_time,update_time,isnotice)
+        	VALUES
+        	(#{hkid}, #{orderNo},"wxxcx",0,#{money},#{transactionid},#{businesstype}, now() , now(),0)
+   </insert>
+   <!--向coursed订单表里插入订单  -->
+    <insert id="addOrder"   >
+    	INSERT INTO
+        	`t_order_course`
+        	(hkid,cid,state,create_time,update_time,isbuy)
+        	VALUES
+        	(#{hkid}, #{cid},1,now() , now(),0)
+   </insert>
+   	 <!--查询家政是否存在针对某个课程的订单 -->
+     <resultMap id="getOrderCourse" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getOrderCourse" resultMap="getOrderCourse">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_order_course`
+		WHERE
+		 	t_order_course.cid=#{cid}
+		 	and t_order_course.state=1
+		 	and t_order_course.hkid=#{hkid}
+    </select>
+    <!--删除家政针对某个课程的重复订单 -->
+	<delete id="deteleOrderCourse">
+			DELETE FROM  `t_order_course` 
+			WHERE
+				hkid=#{hkid}
+				and cid=#{cid}
+	</delete>
+   <!-- 改billhousekeeper订单状态 -->
+    <update id="billOrder" >
+ 		update `t_bill_housekeeper` 
+ 		<set>
+ 			payflag=1,
+ 			threeordernum=#{threeNum},
+ 			update_time=now()
+ 		</set>
+ 			where 
+ 			billno=#{orderNum}
+ 			
+	</update>
+   <!-- 获取家政余额 -->
+   <resultMap id="getBalance" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getBalance" resultMap="getBalance">
+    	SELECT
+			`t_base_housekeeper`.balance as count
+		FROM 
+			`t_base_housekeeper`
+		WHERE
+		 	t_base_housekeeper.hkid=#{hkid}
+		 	and t_base_housekeeper.state=1
+    </select>
+    <!-- 改orderCourse订单状态 -->
+    <update id="updateOrderState" >
+ 		update `t_order_course` 
+ 		<set>
+ 			isbuy=0,
+ 			update_time=now()
+ 		</set>
+ 			where 
+ 			cid=#{cid}
+ 			and hkid=#{hkid}
+	</update>
+	  <!-- 更改家政余额 -->
+    <update id="updateHouseBalance" >
+ 		update `t_base_housekeeper` 
+ 		<set>
+ 			balance=#{balance},
+ 			update_time=now()
+ 		</set>
+ 			where hkid=#{hkid}
+	</update>
+   <!-- 改billemployer订单状态 -->
+    <update id="billEmployer" >
+ 		update `t_bill_employer` 
+ 		<set>
+ 			payflag=1,
+ 			transactionid=#{threeNum},
+ 			update_time=now()
+ 		</set>
+ 			where 
+ 			billno=#{orderNum}
+ 			
+	</update>
+	 <!-- 改billemployer订单数据 -->
+    <update id="updateEmployer" >
+ 		update `t_bill_employer` 
+ 		<set>
+ 			billno=#{orderNo},
+ 			update_time=now()
+ 		</set>
+ 			where 
+ 			billid=#{billid}
+ 			
+	</update>
+	<!--向housekeep订单表里插入订单  -->
+    <insert id="addHouseKeep"   >
+    	INSERT INTO
+        	`t_bill_housekeeper`
+        	(hkid,billno,paytype,payflag,money,transactionid,businesstype,create_time,update_time,isnotice)
+        	VALUES
+        	(#{hkid}, #{orderNo},"wxxcx",1,#{money},#{transactionid},#{businesstype}, now() , now(),0)
+   </insert>
+   <!-- 匹配家政人员列表 -->
+   <resultMap id="getHouseKeeper" type="yinao.qualityLife.model.domain.HouseKeeper">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getHouseKeeper" resultMap="getHouseKeeper">
+    	SELECT
+			`t_base_housekeeper`.hkid,
+			`t_base_housekeeper`.name,
+			`t_base_housekeeper`.username,
+			`t_base_housekeeper`.idcard,
+			`t_base_housekeeper`.education,
+			`t_base_housekeeper`.sex,
+			`t_base_housekeeper`.address1,
+			`t_base_housekeeper`.address2,
+			`t_base_housekeeper`.address3,
+			`t_base_housekeeper`.headimageurl,
+			`t_base_housekeeper`.brief,
+			`t_base_housekeeper`.workdate,
+			`t_base_housekeeper`.salary
+		FROM 
+			`t_base_housekeeper`,
+			`t_test_match`
+		WHERE
+		 	t_base_housekeeper.username=t_test_match.housekeepername
+		 	and t_base_housekeeper.state=1
+		 	and t_base_housekeeper.servicestate=0
+		 	and t_test_match.employername=#{username}
+		 	and t_test_match.count<![CDATA[ >= ]]>#{matchcount}
+	 	LIMIT #{offset},#{pageSize}	
+    </select>
+    <!-- 匹配家政人员总数 -->
+   <resultMap id="getHouseKeeperCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getHouseKeeperCount" resultMap="getHouseKeeperCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_base_housekeeper`,
+			`t_test_match`
+		WHERE
+		 	t_base_housekeeper.username=t_test_match.housekeepername
+		 	and t_base_housekeeper.state=1
+		 	and t_base_housekeeper.servicestate=0
+		 	and t_test_match.employername=#{username}
+		 	and t_test_match.count<![CDATA[ >= ]]>#{matchcount}	
+    </select>
+    <!-- 匹配家政人员的点赞数 -->
+   <resultMap id="getLikeCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getLikeCount" resultMap="getLikeCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_base_like`
+		WHERE
+		 	t_base_like.hkid=#{hkid}
+    </select>
+     <!-- 雇主是否为匹配的家政人员点赞 -->
+   <resultMap id="getIsLike" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getIsLike" resultMap="getIsLike">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_base_like`
+		WHERE
+		 	t_base_like.hkid=#{hkid}
+		 	and t_base_like.username=#{username}
+    </select>
+    <!--匹配个数为0的家政数据列表-->
+   <resultMap id="getHouseKeeperList" type="yinao.qualityLife.model.domain.HouseKeeper">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getHouseKeeperList" resultMap="getHouseKeeperList">
+    	SELECT
+			`t_base_housekeeper`.hkid,
+			`t_base_housekeeper`.name,
+			`t_base_housekeeper`.username,
+			`t_base_housekeeper`.idcard,
+			`t_base_housekeeper`.education,
+			`t_base_housekeeper`.sex,
+			`t_base_housekeeper`.address1,
+			`t_base_housekeeper`.address2,
+			`t_base_housekeeper`.address3,
+			`t_base_housekeeper`.headimageurl,
+			`t_base_housekeeper`.brief,
+			`t_base_housekeeper`.workdate,
+			`t_base_housekeeper`.salary
+		FROM 
+			`t_base_housekeeper`
+		WHERE
+		 	t_base_housekeeper.state=1
+		 	and t_base_housekeeper.servicestate=0
+	    ORDER BY  t_base_housekeeper.hkid  desc
+	    LIMIT #{offset},#{pageSize}	
+    </select>
+    <!--匹配个数为0的家政数据个数-->
+   <resultMap id="getHouseKeeperListCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getHouseKeeperListCount" resultMap="getHouseKeeperListCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_base_housekeeper`
+		WHERE
+		 	t_base_housekeeper.state=1
+		 	and t_base_housekeeper.servicestate=0
+    </select>
+     <!--课程购买次数-->
+   <resultMap id="getcourseOrderCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getcourseOrderCount" resultMap="getcourseOrderCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_order_course`
+		WHERE
+		 	t_order_course.cid=#{cid}
+		 	and t_order_course.state=1
+		 	and t_order_course.isbuy=0
+    </select>
+    <!-- 修改课程学习状态 -->
+    <update id="changeLearn" >
+ 		update `t_order_course` 
+ 		<set>
+ 			islearn=1,
+ 			update_time=now()
+ 		</set>
+ 			where 
+ 			t_order_course.cid=#{cid}
+		 	and t_order_course.hkid=#{hkid}
+	</update>
+	<!-- 获取客户针对某个课程是否已学 -->
+     <resultMap id="getCourseLearn" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getCourseLearn" resultMap="getCourseLearn">
+    	SELECT
+			`t_order_course`.islearn as count
+		FROM 
+			`t_order_course`
+		WHERE
+		 	t_order_course.cid=#{cid}
+		 	and t_order_course.hkid=#{hkid}
+    </select>
+    <!--增加已学记录  -->
+    <insert id="addCourseLearn"   >
+    	INSERT INTO
+        	`t_order_course`
+        	(hkid,cid,state,isbuy,islearn,create_time,update_time)
+        	VALUES
+        	(#{hkid}, #{cid},1,0,1, now() , now())
+   </insert>
+       <!-- 获取雇主针对课程模块已学的课程总数 -->
+	<resultMap id="getOrderLearnCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getOrderLearnCount" resultMap="getOrderLearnCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_order_course`,
+		 	`t_test_course`,
+		  	`t_test_coursecatagory`
+		 WHERE
+		 	t_order_course.cid=t_test_course.cid
+	 	  	and t_test_coursecatagory.ccid=t_test_course.ccid
+		 	and t_test_coursecatagory.state=1
+		 	and t_test_course.state=1
+		 	and t_order_course.state=1
+		 	and t_order_course.isbuy=0
+		 	and t_order_course.islearn=1
+		 	and t_test_course.ccid=#{ccid}
+		 	<if test="hkid != null and hkid != ''">
+		 		and t_order_course.hkid=#{hkid}
+		 	</if>
+    </select>
+     <!-- 获取家政是否已学该课程 -->
+     <resultMap id="getOrderLearnCourseCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getOrderLearnCourseCount" resultMap="getOrderLearnCourseCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_order_course`
+		WHERE
+		 	t_order_course.cid=#{cid}
+		 	and t_order_course.state=1
+		 	and t_order_course.isbuy=0
+		 	and t_order_course.islearn=1
+		 	and t_order_course.hkid=#{hkid}
+    </select>
+</mapper>

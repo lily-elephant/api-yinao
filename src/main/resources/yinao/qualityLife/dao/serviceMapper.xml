@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.ServiceMapper">
+
+    <resultMap id="getUserFromDatabaseMap" type="yinao.qualityLife.model.domain.Service">
+        <id column="osid" property="osid"/>
+        <result column="emid" property="emid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="starttime" property="starttime"/>
+        <result column="endtime" property="endtime"/>
+        <result column="salary" property="salary"/>
+        <result column="managefee" property="managefee"/>
+        <result column="reamrk" property="remark"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+    </resultMap>
+
+    <insert id="addservice" parameterType="yinao.qualityLife.model.domain.Service"  >
+    
+    	<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="osid">
+          SELECT LAST_INSERT_ID()
+      	</selectKey>
+      	
+        INSERT INTO
+        `t_order_service`
+        (emid,hkid,starttime,endtime,salary,managefee,remark, create_time , state)
+        VALUES
+        (#{emid},#{hkid},#{starttime},#{endtime},#{salary},#{managefee},#{remark},now() , "1" )
+    </insert>   
+
+    <update id="editservice" >
+        update t_order_service
+        <set>
+            emid=#{emid},
+            hkid=#{hkid},
+            starttime=#{starttime},
+            endtime=#{endtime},
+            salary=#{salary},
+            managefee=#{managefee},
+            remark=#{remark},
+            update_time=now()
+        </set>
+        where osid=#{osid}
+    </update>
+
+    <update id="deleteservice" >
+        update t_order_service
+        <set>
+            state="0",update_time=now()
+        </set>
+        where osid=#{osid}
+    </update>
+  
+    <insert id="addBillData" >
+        INSERT INTO
+        `t_bill_employer`
+        (emid,paytype,payflag ,money,businesstype, create_time ,osid)
+        VALUES
+        (#{emid},"wxxcx","0",#{money},"薪水",now() , #{osid} )
+    </insert>  
+    
+    
+    <insert id="addServiceRecord" >
+        INSERT INTO
+        `t_order_service_record`
+        (emid,hkid,starttime ,endtime,interviewid,create_time , salary )
+        VALUES
+        (#{emid},#{hkid},#{starttime},#{endtime},#{interviewid}, now(), #{salary})
+    </insert>  
+    
+
+
+</mapper>

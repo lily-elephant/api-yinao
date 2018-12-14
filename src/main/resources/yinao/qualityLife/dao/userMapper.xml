@@ -1,0 +1,1173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.UserMapper">
+
+	<resultMap id="getUserFromDatabaseMap" type="yinao.qualityLife.model.domain.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="idcard" property="idcard"/>
+        <result column="education" property="education"/>
+        <result column="address1" property="address1"/>
+        <result column="address2" property="address2"/>
+        <result column="address3" property="address3"/>
+        <result column="sex" property="sex"/>
+        <result column="servicestate" property="servicestate"/>
+        <result column="roleid" property="roleid"/>
+        <result column="create_time" property="create_time"/>
+        <result column="auth" property="auth"/>
+        <result column="state" property="state"/>
+        <result column="salary" property="salary"/>
+		<result column="workdate" property="workdate"/>
+		<result column="brief" property="brief"/>
+        <result column="headimageurl" property="headimageurl"/>
+        <result column="result" property="result"/>
+        <result column="result2" property="result2"/>
+        <result column="marry" property="marry"/>
+        <result column="isdrive" property="isdrive"/>
+        <result column="nativeplace" property="nativeplace"/>
+        <result column="addresslabel" property="addresslabel"/>
+        <result column="roomarea" property="roomarea"/>
+        <result column="courtarea" property="courtarea"/>
+        <result column="bedroom" property="bedroom"/>
+        <result column="restaurant" property="restaurant"/>
+        <result column="washroom" property="washroom"/>
+        <result column="peoplecount" property="peoplecount"/>
+        <result column="oldcount" property="oldcount"/>
+        <result column="childcount" property="childcount"/>
+        <result column="describes" property="describes"/>  
+    </resultMap>
+    
+    <resultMap id="getFeedbackData" type="yinao.qualityLife.model.domain.Feedback">
+        <id column="cid" property="cid"/>
+        <result column="clienttype" property="clienttype"/>
+        <result column="comment" property="comment"/>
+        <result column="userid" property="userid"/>
+        <result column="create_time" property="create_time"/>
+        <result column="replyer" property="replyer"/>
+        <result column="reply" property="reply"/>
+        <result column="state" property="state"/>
+        <result column="isanswer" property="isanswer"/>
+    </resultMap>
+     
+    <resultMap id="getAppointMentMoney" type="yinao.qualityLife.model.domain.AppointmentMoney">
+        <id column="amid" property="amid"/>
+        <result column="apointmentMoney" property="apointmentMoney"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+        <result column="unit" property="unit"/>
+    </resultMap>
+    
+    
+    <resultMap id="getOfflineTraining" type="yinao.qualityLife.model.domain.OfflineTraining">
+        <id column="otid" property="otid"/>
+        <result column="name" property="name"/>
+        <result column="des" property="des"/>
+        <result column="hkid" property="hkid"/>
+        <result column="money" property="money"/>
+        <result column="create_time" property="create_time"/>
+        <result column="isbuy" property="isbuy"/>
+        <result column="pic" property="pic"/>
+        <result column="state" property="state"/>
+        <result column="address" property="address"/>
+    </resultMap>
+    
+    <resultMap id="getSysInfoData" type="yinao.qualityLife.model.domain.SysInfo">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="clienttype" property="clienttype"/>
+        <result column="userid" property="create_time"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+        <result column="isread" property="isread"/>
+    </resultMap>
+    
+    <resultMap id="getOrderData" type="yinao.qualityLife.model.domain.Order">
+        <id column="osid" property="osid"/>
+        <result column="emid" property="emid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="starttime" property="starttime"/>
+        <result column="endtime" property="endtime"/>
+        <result column="salary" property="salary"/>
+        <result column="managefee" property="managefee"/>
+        <result column="state" property="state"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="create_time"/>
+        <result column="name" property="name"/>
+        <result column="payflag" property="payflag"/>
+        <result column="billno" property="billno"/>
+        <result column="paytype" property="paytype"/> 
+    </resultMap>
+    
+    <resultMap id="getEmployerRecord" type="yinao.qualityLife.model.domain.EmployerRecord">
+        <id column="osid" property="osid"/>
+        <result column="emid" property="emid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="starttime" property="starttime"/>
+        <result column="endtime" property="endtime"/>
+        <result column="salary" property="salary"/>
+        <result column="managefee" property="managefee"/>
+        <result column="state" property="state"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="create_time"/>
+        <result column="emname" property="emname"/>
+        <result column="hkname" property="hkname"/>
+        <result column="address1" property="address1"/>
+        <result column="headimageurl" property="headimageurl"/>
+        <result column="cid" property="cid"/>
+        <result column="score" property="score"/>
+        <result column="content" property="content"/> 
+        <result column="commenttime" property="commenttime"/> 
+        <result column="emphone" property="emphone"/> 
+        <result column="hkphone" property="hkphone"/> 
+        <result column="payflag" property="payflag"/> 
+    </resultMap>
+        
+    <resultMap id="getServiceRecord" type="yinao.qualityLife.model.domain.ServiceRecord">
+        <result column="emid" property="emid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="starttime" property="starttime"/>
+        <result column="endtime" property="endtime"/>
+        <result column="create_time" property="create_time"/>
+        <result column="emname" property="emname"/>
+        <result column="hkname" property="hkname"/>
+        <result column="emphone" property="emphone"/> 
+        <result column="hkphone" property="hkphone"/> 
+        <result column="emheadimg" property="emheadimg"/> 
+        <result column="hkheadimg" property="hkheadimg"/> 
+        <result column="salary" property="salary"/> 
+    </resultMap>
+    
+    
+    
+    <select id="getServiceRecord"  resultMap="getServiceRecord">
+    	SELECT
+    		`t_order_service_record`.emid ,
+    		`t_order_service_record`.hkid ,
+    		`t_order_service_record`.starttime ,
+    		`t_order_service_record`.endtime ,
+    		`t_order_service_record`.create_time,
+    		`t_order_service_record`.salary,
+    		
+    		`t_base_housekeeper`.name as hkname,
+    		`t_base_housekeeper`.username as hkphone,
+    		`t_base_housekeeper`.headimageurl as hkheadimg,
+    		
+    		`t_base_employer`.name as emname,
+    		`t_base_employer`.username as emphone,
+    		`t_base_employer`.headimageurl as emheadimg 
+        FROM
+        	t_order_service_record,t_base_housekeeper,t_base_employer
+        WHERE
+        	t_order_service_record.hkid = t_base_housekeeper.hkid
+        	and t_order_service_record.emid = t_base_employer.emid
+        	<if test="emid != null and emid != ''">
+        		and t_order_service_record.emid = #{emid} 
+        	</if>
+        	<if test="hkid != null and hkid != ''">
+        		and t_order_service_record.hkid = #{hkid} 
+        	</if>
+  		ORDER BY
+  			`t_order_service_record`.create_time desc
+    </select>
+    
+    
+    
+   
+    <resultMap id="getCommentData" type="yinao.qualityLife.model.domain.Comment">
+        <id column="cid" property="cid"/>
+        <result column="emid" property="emid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="score" property="score"/>
+        <result column="content" property="content"/> 
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+    </resultMap>	
+    
+    <resultMap id="getHKOrderData" type="yinao.qualityLife.model.domain.StudyOrder">
+        <id column="ocid" property="ocid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="cid" property="cid"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+        <result column="state" property="state"/>
+        <result column="isbuy" property="isbuy"/>
+        <result column="name" property="name"/>
+        <result column="brief" property="brief"/>
+        <result column="money" property="money"/>
+        <result column="coursepicture" property="coursepicture"/>   
+        <result column="hkname" property="hkname"/> 
+    </resultMap>
+    
+ <resultMap id="getOfflineTrainingNotes" type="yinao.qualityLife.model.domain.OfflineTrainingNotes">
+        <id column="billid" property="billid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="payflag" property="payflag"/>
+        <result column="transactionid" property="transactionid"/>
+        <result column="businesstype" property="businesstype"/>
+        <result column="ot_name" property="ot_name"/>
+        <result column="create_time" property="create_time"/>
+        <result column="des" property="des"/>
+        <result column="address" property="address"/>
+        <result column="name" property="name"/>
+        <result column="username" property="username"/>
+        <result column="isnotice" property="isnotice"/>
+    </resultMap>
+    
+    
+    
+    
+    
+    <resultMap id="getPersonalityAnswer" type="yinao.qualityLife.model.domain.PersonalityNine">
+        <result column="result" property="result"/>
+    </resultMap>
+    
+    <resultMap id="getPersonalityAnswer2" type="yinao.qualityLife.model.domain.PersonalityNine">
+        <result column="result2" property="result"/>
+    </resultMap>
+    
+    
+    <resultMap id="getAuthData" type="yinao.qualityLife.model.domain.AuthData">
+        <result column="auth_time" property="auth_time"/>
+        <result column="identity_auth" property="identity_auth"/>
+        <result column="laolai_auth" property="laolai_auth"/>
+        <result column="phonenumber_auth" property="phonenumber_auth"/>
+    </resultMap>
+    
+    
+    <select id="getAuthData"  resultMap="getAuthData">
+		SELECT
+    		auth_time,identity_auth,laolai_auth,phonenumber_auth
+		FROM
+     		t_base_housekeeper
+		WHERE
+     		hkid = #{hkid}
+        		
+    </select>
+    
+    
+    <select id="getPersonalityAnswer"  resultMap="getPersonalityAnswer">
+		SELECT
+    		result
+		FROM
+     		t_base_housekeeper
+		WHERE
+     		hkid = #{hkid}
+        		
+    </select>
+    
+    <select id="getPersonalityAnswer2"  resultMap="getPersonalityAnswer2">
+		SELECT
+    		result2
+		FROM
+     		t_base_housekeeper
+		WHERE
+     		hkid = #{hkid}
+        		
+    </select>
+    
+  
+    <select id="getOfflineTrainingNotes"  resultMap="getOfflineTrainingNotes">
+		SELECT
+    		t_bill_housekeeper.billid  ,
+    		t_bill_housekeeper.hkid  ,
+    		t_bill_housekeeper.payflag  ,
+    		t_bill_housekeeper.transactionid  ,
+    		t_bill_housekeeper.businesstype  ,
+    		t_bill_housekeeper.create_time  ,
+    		t_bill_housekeeper.isnotice  ,
+    		t_test_offline_training.name as ot_name,
+    		t_test_offline_training.des,
+    		t_test_offline_training.address,
+    		t_base_housekeeper.name ,
+    		t_base_housekeeper.username 
+		FROM
+     		t_bill_housekeeper,t_test_offline_training,t_base_housekeeper
+		WHERE
+     		t_bill_housekeeper.payflag = '1'
+     		and t_bill_housekeeper.businesstype ='实操培训'
+     		and t_bill_housekeeper.hkid = t_base_housekeeper.hkid 
+     		and t_bill_housekeeper.transactionid = t_test_offline_training.otid
+			<if test="address != null and address != ''">
+        		and t_test_offline_training.address like CONCAT('%',#{address},'%')
+        	</if>
+        	<if test="name != null and name != ''">
+        		and t_base_housekeeper.name like CONCAT('%',#{name},'%')
+        	</if>
+        	<if test="username != null and username != ''">
+        		and t_base_housekeeper.username like CONCAT('%',#{username},'%')
+        	</if>		
+    </select>
+
+
+     <resultMap id="getOfflineTrainingRecord" type="yinao.qualityLife.model.domain.OfflineTrainingRecord">
+        <id column="orid" property="orid"/>
+        <result column="otid" property="otid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="name" property="name"/>
+        <result column="state" property="state"/>
+        <result column="score" property="score"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+    </resultMap>
+    
+    
+    <select id="getOfflineTrainingRecord"  resultMap="getOfflineTrainingRecord">
+		SELECT
+    		t_test_offline_training_record.otid,
+			hkid,
+			score,
+			t_test_offline_training_record.state,
+			t_test_offline_training_record.create_time,
+			t_test_offline_training_record.update_time,
+			t_test_offline_training.name
+		FROM
+     		t_test_offline_training,t_test_offline_training_record
+		WHERE
+     		t_test_offline_training.otid=t_test_offline_training_record.otid
+        	and t_test_offline_training_record.otid = #{otid}
+			and t_test_offline_training_record.state =1
+			<if test="hkid != null and hkid != ''">
+        		and hkid = #{hkid}
+        	</if>
+			
+    </select>
+ 
+    
+    <resultMap id="getCertificate" type="yinao.qualityLife.model.domain.Certificate">
+        <id column="cid" property="cid"/>
+        <result column="aid" property="aid"/>
+        <result column="name" property="name"/>
+        <result column="picture" property="picture"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+    </resultMap>
+    
+    
+    <resultMap id="benben" type="yinao.qualityLife.model.domain.Ben">
+        <result column="username" property="username"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    
+    
+    <select id="getEMInfoByUserid"  resultMap="benben">
+    	SELECT
+    		username , name 
+        FROM
+        	t_base_employer
+        WHERE
+        	emid = #{userid}
+    </select>
+    
+    <select id="getHKInfoByUserid"  resultMap="benben">
+    	SELECT
+    		username , name 
+        FROM
+        	t_base_housekeeper
+        WHERE
+        	hkid = #{userid}
+    </select>
+    
+    
+    
+    
+    
+    <select id="getOfflineTraining"  resultMap="getOfflineTraining">
+    	SELECT
+    		otid,t_test_offline_training.name,t_test_offline_training.create_time,money,pic,t_test_offline_training.state,address,content as des
+        FROM
+        	t_test_offline_training,t_source_article
+        WHERE
+        	t_test_offline_training.state=1
+        	and t_test_offline_training.des = t_source_article.aid
+        	<if test="otid != null and otid != ''">
+        		and t_test_offline_training.otid = #{otid}
+        	</if>
+    </select>
+    
+    
+    <select id="getadminOfflineTraining"  resultMap="getOfflineTraining">
+    	SELECT
+    		otid,name,des,create_time,money,pic,state,address
+        FROM
+        	t_test_offline_training
+        WHERE
+        	state=1
+        	<if test="otid != null and otid != ''">
+        		and t_test_offline_training.otid = #{otid}
+        	</if>
+        	<if test="name != null and name != ''">
+        		and t_test_offline_training.name like CONCAT('%',#{name},'%')
+        	</if>
+    </select>
+    
+    <insert id="addOfflineTraining"   >
+    	INSERT INTO
+        	`t_test_offline_training`
+        	(name,des,money , create_time , pic , state , address )
+        	VALUES
+        	(#{name}, #{des},#{money}, #{create_time} , #{pic} , '1',#{address})
+   </insert>
+   
+   
+   <update id="editOfflineTraining" >
+ 		update `t_test_offline_training` 
+ 		<set>
+ 			<if test="name != null and name != ''">name=#{name},</if> 
+ 			<if test="des != null and des != ''">des=#{des},</if> 
+ 			<if test="address != null and address != ''">address=#{address},</if> 
+ 			<if test="pic != null and pic != ''">pic=#{pic},</if> 
+ 			<if test="money != null and money != ''">money=#{money},</if> 
+ 			<if test="create_time != null and create_time != ''">create_time=#{create_time},</if> 
+ 		</set>
+ 		where
+ 			otid = #{otid} 
+	</update>
+	
+	<update id="deleteOfflineTraininga" >
+ 		update t_test_offline_training
+ 		<set>
+ 		state='0'
+ 		</set>
+ 		where
+ 			otid = #{otid}
+	</update>
+
+    <select id="getAppointMentMoney"  resultMap="getAppointMentMoney">
+    	SELECT
+    		*
+        FROM
+        	t_money_appointment
+        WHERE
+        	state=1
+        ORDER BY
+        	create_time desc
+    </select>
+    
+    <select id="getOfflineTrainingIsBuy"  resultMap="getOfflineTraining">
+    	SELECT
+    		payflag
+        FROM
+        	t_bill_housekeeper
+        WHERE
+        	businesstype="实操培训"
+        	and hkid = #{hkid}
+        	and transactionid=#{otid}
+    </select>
+    
+    
+    <select id="getOfflineTrainingBuyCount"  resultMap="getOfflineTraining">
+    	SELECT
+    		payflag
+        FROM
+        	t_bill_housekeeper
+        WHERE
+        	businesstype="实操培训"
+        	and transactionid=#{otid}
+    </select>
+    
+    
+    
+    <select id="getCertificate"  resultMap="getCertificate">
+    	SELECT
+    		cid,name,picture,state,create_time
+        FROM
+        	t_source_certificate
+        WHERE
+        	state=1
+    </select>
+    
+    <select id="getHKOrderList"  resultMap="getHKOrderData">
+    	SELECT
+    		`t_order_course`.ocid ,
+    		`t_order_course`.hkid ,
+    		`t_order_course`.cid ,
+    		`t_order_course`.create_time ,
+    		`t_order_course`.update_time ,
+    		`t_order_course`.state ,
+    		`t_order_course`.isbuy ,
+    		`t_test_course`.name,
+    		`t_test_course`.brief,
+    		`t_test_course`.money,
+    		t_base_housekeeper.name as hkname ,
+    		t_source_picture.path as coursepicture
+        FROM
+        	t_order_course,t_test_course,t_base_housekeeper,t_source_picture
+        WHERE
+        	t_order_course.cid = t_test_course.cid
+        	and `t_order_course`.hkid=t_base_housekeeper.hkid
+        	and `t_test_course`.coursepicture=t_source_picture.pid
+  			and t_order_course.state = 1 
+  			<if test="hkid != null and hkid != ''">
+        		and t_order_course.hkid = #{hkid}
+        	</if>
+        	<if test="isbuy != null and isbuy != ''">
+        		and t_order_course.isbuy = #{isbuy}
+        	</if>
+    </select>
+    
+    <select id="getCommentList"  resultMap="getCommentData">
+    	SELECT
+    		cid ,emid,hkid,score,content,state,create_time
+        FROM
+        	t_order_comment
+        WHERE
+  			emid = #{emid} 
+  			and hkid = #{hkid}
+  			and state = 1 
+    </select>
+    
+    <update id="deleteComment" >
+ 		update `t_order_comment` 
+ 		<set>
+ 			state='0',
+ 			update_time=now()
+ 		</set>
+ 		where
+ 			emid = #{emid} 
+  			and hkid = #{hkid}
+	</update>
+    
+    <insert id="insertComment"   >
+    	INSERT INTO
+        	`t_order_comment`
+        	(emid,hkid,state , create_time , score , content)
+        	VALUES
+        	(#{emid}, #{hkid},'1', now() , #{score} , #{content})
+   </insert>
+
+   <update id="deleteOfflineTraining" >
+ 		update `t_test_offline_training_record` 
+ 		<set>
+ 			state='0',
+ 			update_time=now()
+ 		</set>
+ 		where
+ 			hkid = #{hkid} 
+  			and otid = #{otid}
+	</update>
+   
+   <insert id="savaOfflineTraining"   >
+    	INSERT INTO
+        	`t_test_offline_training_record`
+        	(hkid,score,state,create_time,otid)
+        	VALUES
+        	(#{hkid}, #{score},'1', now() , #{otid})
+   </insert>
+   
+    <select id="getEmployerRecord"  resultMap="getEmployerRecord">
+    	SELECT
+    		`t_order_service`.osid ,
+    		`t_order_service`.emid ,
+    		`t_order_service`.hkid ,
+    		`t_order_service`.starttime ,
+    		`t_order_service`.endtime ,
+    		`t_order_service`.salary ,
+    		`t_order_service`.managefee,
+    		`t_order_service`.state,
+    		`t_order_service`.remark,
+    		`t_order_service`.create_time,
+    		`t_base_housekeeper`.name as hkname,
+    		`t_base_housekeeper`.username as hkphone,
+    		`t_base_housekeeper`.headimageurl,
+    		`t_base_employer`.name as emname,
+    		`t_base_employer`.username as emphone,
+    		`t_base_employer`.address1
+        FROM
+        	t_order_service,t_base_housekeeper,t_base_employer
+        WHERE
+        	t_order_service.hkid = t_base_housekeeper.hkid
+        	and t_order_service.emid = t_base_employer.emid
+        	<if test="emid != null and emid != ''">
+        		and t_order_service.emid = #{emid} 
+        	</if>
+        	<if test="hkid != null and hkid != ''">
+        		and t_order_service.hkid = #{hkid} 
+        	</if>
+  			and t_order_service.state = 1 
+  		ORDER BY
+  			`t_order_service`.create_time desc
+    </select>
+    
+    <select id="getAdminEmployerRecord"  resultMap="getEmployerRecord">
+    	SELECT
+    		`t_order_service`.osid ,
+    		`t_order_service`.emid ,
+    		`t_order_service`.hkid ,
+    		`t_order_service`.starttime ,
+    		`t_order_service`.endtime ,
+    		`t_order_service`.salary ,
+    		`t_order_service`.managefee,
+    		`t_order_service`.state,
+    		`t_order_service`.remark,
+    		`t_order_service`.create_time,
+    		`t_base_housekeeper`.name as hkname,
+    		`t_base_housekeeper`.username as hkphone,
+    		`t_base_housekeeper`.headimageurl,
+    		`t_base_employer`.name as emname,
+    		`t_base_employer`.username as emphone,
+    		`t_base_employer`.address1,
+    		t_bill_employer.payflag
+        FROM
+        	t_order_service,t_base_housekeeper,t_base_employer,t_bill_employer
+        WHERE
+        	t_order_service.hkid = t_base_housekeeper.hkid
+        	and t_order_service.emid = t_base_employer.emid
+        	and t_order_service.osid= t_bill_employer.osid
+        	<if test="emphone != null and emphone != ''">
+        		and t_base_employer.username like CONCAT('%',#{emphone},'%')
+        	</if>
+        	<if test="emname != null and emname != ''">
+        		and t_base_employer.name like CONCAT('%',#{emname},'%')
+        	</if>       	
+        	<if test="hkphone != null and hkphone != ''">
+        		and t_base_housekeeper.username like CONCAT('%',#{hkphone},'%')
+        	</if>        	
+        	<if test="hkname != null and hkname != ''">
+        		and t_base_housekeeper.name like CONCAT('%',#{hkname},'%')
+        	</if>
+  			and t_order_service.state = 1 
+  		ORDER BY
+  			`t_order_service`.create_time desc
+    </select>
+    
+    <select id="getOrderList"  resultMap="getOrderData">
+    	SELECT
+    		`t_order_service`.osid ,
+    		`t_order_service`.emid ,
+    		`t_order_service`.hkid ,
+    		`t_order_service`.starttime ,
+    		`t_order_service`.endtime ,
+    		`t_order_service`.salary ,
+    		`t_order_service`.managefee,
+    		`t_order_service`.state,
+    		`t_order_service`.remark,
+    		`t_order_service`.create_time,
+    		`t_base_housekeeper`.name,
+    		`t_bill_employer`.payflag,
+    		`t_bill_employer`.billno,
+    		`t_bill_employer`.paytype,
+    		`t_bill_employer`.money,
+    		`t_bill_employer`.billid
+        FROM
+        	t_order_service,t_base_housekeeper,t_bill_employer
+        WHERE
+        	t_order_service.osid = t_bill_employer.osid
+        	and t_order_service.hkid = t_base_housekeeper.hkid
+  			and t_order_service.emid = #{emid} 
+  			and t_bill_employer.payflag = #{payflag}
+  			and t_order_service.state = 1 
+  		ORDER BY 
+  			create_time desc
+    </select>
+    
+    <select id="getNoticeInfoList"  resultMap="getSysInfoData">
+    	SELECT
+    		umid as id ,title,content,clienttype,state,create_time,isread
+        FROM
+        	t_base_usermessage
+        WHERE
+  			clienttype = #{clienttype} 
+  			and userid = #{userid}
+  			and state = 1 
+    </select>
+    
+     <select id="getSysInfoList"  resultMap="getSysInfoData">
+    	SELECT
+    		smid as id ,title,content,clienttype,state,create_time
+        FROM
+        	t_base_sysmessage
+        WHERE
+  			clienttype = #{clienttype} 
+  			and state = 1 
+    </select>
+    
+    <select id="getSysCount"  resultMap="getSysInfoData">
+    	SELECT
+    		`t_base_sysmessage`.smid as id ,
+    		`t_base_sysmessage`.title ,
+    		`t_base_sysmessage`.content ,
+    		`t_base_sysmessage`.clienttype ,
+    		`t_base_sysmessage`.state ,
+    		`t_base_sysmessage`.create_time ,
+    		`t_base_usersysmessage`.userid 
+        FROM
+        	t_base_sysmessage,
+        	t_base_usersysmessage
+        WHERE
+  			t_base_sysmessage.smid = t_base_usersysmessage.smid
+  			and t_base_sysmessage.state = 1 
+  			and t_base_sysmessage.smid = #{id}
+  			and `t_base_usersysmessage`.userid = #{userid}
+    </select>
+    
+    <update id="setUserInfoIsRead" >
+ 		update `t_base_usermessage` 
+ 		<set>
+ 			isread='1',
+ 			update_time=now()
+ 		</set>
+ 			where userid=#{userid}
+ 			and umid=#{id}
+ 			and clienttype=#{clienttype}
+	</update>
+    
+    
+    <insert id="setSysInfoIsRead"   >
+    	INSERT INTO
+        	`t_base_usersysmessage`
+        	(smid,userid,state , create_time)
+        	VALUES
+        	(#{id}, #{userid},'1', now())
+   </insert>
+   
+   <insert id="submitFeedback"   >
+    	INSERT INTO
+        	`t_base_comment`
+        	(clienttype,comment,userid , create_time ,state  )
+        	VALUES
+        	(#{clienttype}, #{comment},#{userid}, now() , '1' )
+   </insert>
+   
+   
+   <update id="userFeedback" >
+ 		update `t_base_comment` 
+ 		<set>
+ 			replyer='官方客服',
+ 			reply=#{reply},
+ 			update_time=now(),
+ 			isanswer='1'
+ 		</set>
+ 			where cid=#{cid}
+	</update>
+	
+	
+	<update id="changeNoticeState" >
+ 		update `t_bill_housekeeper` 
+ 		<set>
+ 			update_time=now(),
+ 			isnotice='1'
+ 		</set>
+ 			where hkid=#{hkid}
+ 			and transactionid = #{transactionid}
+	</update>
+   
+   
+   
+   <select id="myFeedback"  resultMap="getFeedbackData">
+    	SELECT
+    		cid,clienttype,comment,userid,create_time,replyer,reply,state
+        FROM
+        	`t_base_comment`
+        WHERE
+  			clienttype = #{clienttype} 
+  			and userid = #{userid} 
+  			and state = 1
+  		ORDER BY
+  			create_time desc 
+    </select>
+    
+    
+    <select id="adminFeedback"  resultMap="getFeedbackData">
+    	SELECT
+    		cid,clienttype,comment,userid,create_time,replyer,reply,state,isanswer
+        FROM
+        	`t_base_comment`
+        WHERE
+  			state = 1
+  			<if test="isanswer != null and isanswer != ''">
+        		and isanswer = #{isanswer} 
+        	</if>
+  		ORDER BY
+  			create_time desc 
+    </select>
+    
+    
+    
+    
+    
+    <resultMap id="getEmidByUsernameData" type="yinao.qualityLife.model.domain.Emid">
+        <id column="emid" property="emid"/>
+    </resultMap>
+    
+    <resultMap id="getHkidByUsernameData" type="yinao.qualityLife.model.domain.Hkid">
+        <id column="hkid" property="hkid"/>
+    </resultMap>
+    
+    <select id="getHkidByUsername"  resultMap="getHkidByUsernameData">
+    	SELECT
+    		hkid
+        FROM
+        	`t_base_housekeeper`
+        WHERE
+  			username = #{username}
+    </select>
+    
+    <select id="getEmidByUsername"  resultMap="getEmidByUsernameData">
+    	SELECT
+    		emid
+        FROM
+        	`t_base_employer`
+        WHERE
+  			username = #{username}
+    </select>
+    
+    <select id="loginEmployer"  resultMap="getUserFromDatabaseMap">
+    	SELECT
+    		`t_base_employer`.emid as id ,
+    		`t_base_employer`.name,
+        	`t_base_employer`.username,
+        	`t_base_employer`.password,
+        	`t_base_employer`.headimageurl,
+        	`t_base_employer`.idcard,
+        	`t_base_employer`.education,
+        	`t_base_employer`.address1,
+        	`t_base_employer`.address2,
+        	`t_base_employer`.address3,
+        	`t_base_employer`.sex,
+        	`t_base_employer`.state,
+        	`t_base_employer`.servicestate,
+        	`t_base_employer`.create_time,
+        	`t_base_employer`.role_id,
+        	`t_base_employer`.addresslabel,
+        	`t_base_employer`.roomarea,
+        	`t_base_employer`.courtarea,
+        	`t_base_employer`.bedroom,
+        	`t_base_employer`.restaurant,
+        	`t_base_employer`.washroom,
+        	`t_base_employer`.peoplecount,
+        	`t_base_employer`.oldcount,
+        	`t_base_employer`.childcount,
+        	`t_base_employer`.describes,
+        	role.auth
+        FROM
+        	`t_base_employer` ,
+        	role
+        WHERE
+        	`t_base_employer`.role_id = role.role_id 
+        AND
+        	`t_base_employer`.username = #{username}
+    </select>
+    
+    <select id="loginAdmin"  resultMap="getUserFromDatabaseMap">
+    	SELECT
+    		`t_rbac_user`.userid as id ,
+    		`t_rbac_user`.name,
+        	`t_rbac_user`.phone as username,
+        	`t_rbac_user`.password,
+        	`t_rbac_user`.state,
+        	`t_rbac_user`.sex,
+        	`t_rbac_user`.entrytime as create_time,
+			`t_rbac_role`.rolename as auth 
+			
+        FROM
+        	t_rbac_user , t_rbac_userrole , t_rbac_role
+        WHERE
+        	t_rbac_user.userid = t_rbac_userrole.userid
+        	and  t_rbac_userrole.roleid = t_rbac_role.roleid        
+        	and t_rbac_user.phone = #{username}
+    </select>
+    
+    
+    
+    <select id="loginHousekeeper"  resultMap="getUserFromDatabaseMap">
+    	SELECT
+    		`t_base_housekeeper`.hkid as id,
+    		`t_base_housekeeper`.name,
+        	`t_base_housekeeper`.username,
+        	`t_base_housekeeper`.password,
+        	`t_base_housekeeper`.headimageurl,
+        	`t_base_housekeeper`.idcard,
+        	`t_base_housekeeper`.education,
+        	`t_base_housekeeper`.address1,
+        	`t_base_housekeeper`.address2,
+        	`t_base_housekeeper`.address3,
+        	`t_base_housekeeper`.sex,
+        	`t_base_housekeeper`.state,
+        	`t_base_housekeeper`.create_time,
+        	`t_base_housekeeper`.role_id,
+        	 `t_base_housekeeper`.brief,
+        	`t_base_housekeeper`.salary,
+        	`t_base_housekeeper`.workdate,
+        	`t_base_housekeeper`.result,
+        	`t_base_housekeeper`.result2,
+        	`t_base_housekeeper`.marry,
+        	`t_base_housekeeper`.isdrive,
+        	`t_base_housekeeper`.describes,
+        	`t_base_housekeeper`.nativeplace,
+        	role.auth
+        FROM
+        	`t_base_housekeeper` ,
+        	role
+        WHERE
+        	`t_base_housekeeper`.role_id = role.role_id AND
+        	`t_base_housekeeper`.username = #{username}
+    </select>	
+   
+  <insert id="registerEmployer"   >
+    	INSERT INTO
+        	`t_base_employer`
+        	(username,password,create_time , role_id ,state , name )
+        	VALUES
+        	(#{username}, #{password}, now() , '1' , '1', #{name} )
+   </insert>
+   
+   <insert id="registerHousekeeper"   >
+    	INSERT INTO
+        	`t_base_housekeeper`
+        	(username,password,create_time , role_id ,state , name ,servicestate)
+        	VALUES
+        	(#{username}, #{password}, now() , '1' , '0', #{name} , 0)
+   </insert>
+   
+
+   
+   
+   <update id="savePersonalityAnswer" >
+ 		update `t_base_housekeeper` 
+ 		<set>
+ 			result=#{result},
+ 			update_time=now()
+ 		</set>
+ 			where hkid=#{userid}
+	</update>
+	
+	<update id="savePersonalityAnswerTwo" >
+ 		update `t_base_housekeeper` 
+ 		<set>
+ 			result2=#{result},
+ 			update_time=now()
+ 		</set>
+ 			where hkid=#{userid}
+	</update>
+   
+   <update id="updateHousekeeper" >
+ 		update `t_base_housekeeper` 
+ 		<set>
+ 			password=#{password},
+ 			update_time=now()
+ 		</set>
+ 			where username=#{username}
+	</update>
+	
+   <update id="updateEmployer" >
+ 		update `t_base_employer` 
+ 		<set>
+ 			password=#{password},
+ 			update_time=now()
+ 		</set>
+ 			where username=#{username}
+	</update>
+
+<insert id="registerLoginEmployer"   >
+    	INSERT INTO
+        	`t_base_employer`
+        	(username,password,create_time , role_id ,state)
+        	VALUES
+        	(#{username},#{password}, now() , '1' , '1')
+   </insert>
+   
+   <insert id="registerLoginHousekeeper"   >
+    	INSERT INTO
+        	`t_base_housekeeper`
+        	(username,password,create_time , role_id ,state)
+        	VALUES
+        	(#{username},#{password},now() , '1' , '0' )
+   </insert>
+   
+   
+   	<!-- 新增考试结果 -->
+	<update id="changeIcon"   >
+	<choose>
+        <when test="clienttype !=null and clienttype == 'EMPLOYER'">
+            update `t_base_employer` 
+ 		<set>
+ 			headimageurl=#{headimageurl},
+ 			update_time=now()
+ 		</set>
+ 			where emid=#{id}
+        </when>
+        <otherwise>
+            update `t_base_housekeeper` 
+ 		<set>
+ 			headimageurl=#{headimageurl},
+ 			update_time=now()
+ 		</set>
+ 			where hkid=#{id}
+        </otherwise>
+    </choose>	
+   </update>
+   
+    <!-- 获取后台用户登录信息-->
+	<resultMap id="getAdminUser" type="yinao.qualityLife.model.domain.AdminUser">
+		<id column="userid" property="userid"/>
+		<result column="name" property="name"/>
+		<result column="phone" property="phone"/>
+	</resultMap>
+    <select id="getAdminUser" resultMap="getAdminUser">
+    	SELECT
+			`t_rbac_user`.userid,
+			`t_rbac_user`.name,
+			`t_rbac_user`.phone
+		FROM 
+			`t_rbac_user` 	
+		 WHERE
+		 	t_rbac_user.state=1
+		 	and t_rbac_user.phone=#{phone}
+    </select>
+    
+    <resultMap id="admincertificatelist" type="yinao.qualityLife.model.domain.HousekeeperCertificate">
+        <id column="hkcid" property="hkcid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="cid" property="cid"/>
+        <result column="picture" property="picture"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    
+    <select id="admincertificatelist" resultMap="admincertificatelist">
+    	SELECT 
+    		`t_base_housekeeper_certificate`.hkcid,
+    		`t_base_housekeeper_certificate`.hkid,
+    		`t_base_housekeeper_certificate`.cid,
+    		`t_base_housekeeper_certificate`.picture,
+    		`t_base_housekeeper_certificate`.state,
+    		`t_base_housekeeper_certificate`.create_time,
+    		`t_source_certificate`.name
+
+    	FROM 
+    		t_base_housekeeper_certificate ,
+    		t_source_certificate
+         WHERE
+		 	t_base_housekeeper_certificate.cid=t_source_certificate.cid
+		 	and t_base_housekeeper_certificate.hkid=#{hkid}
+		 	and t_base_housekeeper_certificate.cid=#{cid}
+		 	and t_base_housekeeper_certificate.state='1'
+		 	
+    </select>
+    
+    
+    <resultMap id="getbalance" type="yinao.qualityLife.model.domain.Balance">
+        <result column="balance" property="balance"/>
+    </resultMap>
+    
+    <select id="getbalance" resultMap="getbalance">
+    	SELECT 
+    		balance
+    	FROM 
+    		t_base_housekeeper
+         WHERE
+		 	t_base_housekeeper.hkid = #{userid}
+		 	
+    </select>
+    
+    
+    <resultMap id="getChargePropertices" type="yinao.qualityLife.model.domain.ChargePropertices">
+        <result column="money" property="money"/>
+        <result column="chargemoney" property="chargemoney"/>
+    </resultMap>
+    
+    <select id="getChargePropertices" resultMap="getChargePropertices">
+    	SELECT 
+    		money,chargemoney
+    	FROM 
+    		t_pay_propertites
+         WHERE
+		 	t_pay_propertites.state = '1'
+		 	
+    </select>
+    
+    <resultMap id="getbill" type="yinao.qualityLife.model.domain.Bill">
+        <result column="billno" property="billno"/>
+        <result column="money" property="money"/>
+        <result column="businesstype" property="businesstype"/>
+        <result column="create_time" property="create_time"/>
+    </resultMap>
+    
+    <select id="getbill" resultMap="getbill">
+    	SELECT 
+    		billno , money , businesstype , create_time
+    	FROM 
+    		t_bill_housekeeper
+         WHERE
+		 	payflag = '1'
+		 	and hkid = #{userid}
+    </select>
+    
+    
+    
+    
+    <resultMap id="getPersonalityTest" type="yinao.qualityLife.model.domain.PersonalityTest">
+        <result column="no" property="no"/>
+    </resultMap>
+    
+    <select id="getPersonalityTest"  resultMap="getPersonalityTest">
+		SELECT
+    		no 
+		FROM
+     		t_personality_test
+ 		GROUP BY
+			no
+	
+    </select>
+    
+    
+     <resultMap id="getSixteenTest" type="yinao.qualityLife.model.domain.SixteenTest">
+        <result column="no" property="no"/>
+        <result column="question" property="question"/>
+        <result column="type" property="type"/>
+    </resultMap>
+    
+    <select id="getSixteenTest"  resultMap="getSixteenTest">
+		SELECT
+    		t_sixteen_question.no ,  t_sixteen_question.question ,t_sixteen_type.type
+		FROM
+     		t_sixteen_question , t_sixteen_type 
+ 		WHERE
+		 	t_sixteen_question.no = t_sixteen_type.no
+		ORDER BY
+		 	t_sixteen_question.no
+		 	
+	
+    </select>
+    
+    
+    
+    <resultMap id="getAnswer" type="yinao.qualityLife.model.domain.PersonalityTestDes">
+        <result column="des" property="des"/>
+        <result column="answer" property="answer"/>
+    </resultMap>
+    
+    <select id="getAnswer"  resultMap="getAnswer">
+		SELECT
+    		des,answer 
+		FROM
+     		t_personality_test
+ 		WHERE
+ 			no = #{no}
+	
+    </select>
+    
+    <resultMap id="getSixteenAnswer" type="yinao.qualityLife.model.domain.SixteenOption">
+        <result column="des" property="des"/>
+        <result column="options" property="options"/>
+        <result column="score" property="score"/>
+    </resultMap>
+    
+    <select id="getSixteenAnswer"  resultMap="getSixteenAnswer">
+		SELECT
+    		des,options,score 
+		FROM
+     		t_sixteen_option
+ 		WHERE
+ 			no = #{no}
+	
+    </select>
+    
+    
+    
+</mapper>

@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.adminUserMapper">
+<!-- 获取后台用户的列表 -->
+	<resultMap id="getUserList" type="yinao.qualityLife.model.domain.AdminUser">
+		<id column="userid" property="userid"/>
+		<result column="name" property="name"/>
+		<result column="phone" property="phone"/>
+		<result column="department" property="department"/>
+		<result column="role" property="role"/>		
+		<result column="entrytime" property="entrytime"/>
+		<result column="position" property="position"/>
+		<result column="sex" property="sex"/>
+	</resultMap>
+    <select id="getUserList" resultMap="getUserList">
+    	SELECT
+			`t_rbac_user`.userid,
+			`t_rbac_user`.name,
+			`t_rbac_user`.phone,
+			`t_rbac_department`.name as department,
+			`t_rbac_role`.rolename as role,
+			`t_rbac_user`.entrytime,
+			`t_rbac_user`.position,
+			`t_rbac_user`.sex,
+			`t_rbac_user`.departmentid,
+			`t_rbac_role`.roleid
+		FROM 
+			`t_rbac_user`,
+		 	`t_rbac_department`,
+		  	`t_rbac_role`,
+		  	`t_rbac_userrole`
+		 WHERE
+		 	t_rbac_user.userid=t_rbac_userrole.userid
+		 	and t_rbac_role.roleid=t_rbac_userrole.roleid
+		 	and t_rbac_user.departmentid=t_rbac_department.id
+		 	and t_rbac_user.state=1
+		 	and t_rbac_role.state=1
+		 	and t_rbac_department.state=1
+	 	<if test="phone != null and phone != ''">
+			AND t_rbac_user.phone like CONCAT('%',#{phone},'%')
+		</if>
+		<if test="department != null and department != ''">
+			AND	t_rbac_department.id=#{department}
+		</if>
+		<if test="name != null and name != ''">
+			AND t_rbac_user.name like CONCAT('%',#{name},'%')
+		</if> 
+		ORDER BY 
+			`t_rbac_user`.userid desc
+		LIMIT #{offset},#{pageSize}
+    </select>
+    
+    <!-- 获取后台用户总数 -->
+	<resultMap id="getUserCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getUserCount" resultMap="getUserCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_rbac_user`,
+		 	`t_rbac_department`,
+		  	`t_rbac_role`,
+		  	`t_rbac_userrole`
+		 WHERE
+		 	t_rbac_user.userid=t_rbac_userrole.userid
+		 	and t_rbac_role.roleid=t_rbac_userrole.roleid
+		 	and t_rbac_user.departmentid=t_rbac_department.id
+		 	and t_rbac_user.state=1
+		 	and t_rbac_role.state=1
+		 	and t_rbac_department.state=1
+	 	<if test="phone != null and phone != ''">
+			AND	t_rbac_user.phone=#{phone}
+		</if>
+		<if test="department != null and department != ''">
+			AND	t_rbac_department.name=#{department}
+		</if>
+		<if test="name != null and name != ''">
+			AND t_rbac_user.name like CONCAT('%',#{name},'%')
+		</if> 
+    </select>
+    <!-- 判断用户是否已添加 -->
+	<resultMap id="getPhoneCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getPhoneCount" resultMap="getPhoneCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_rbac_user`
+		 WHERE
+		 	 t_rbac_user.state=1
+		 	and t_rbac_user.phone=#{phone}
+    </select>
+    <!-- 添加用户 -->
+   <insert id="addUser"   >
+   <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="userid">
+          SELECT LAST_INSERT_ID()
+   </selectKey>
+	    	INSERT INTO
+	        	`t_rbac_user`
+	        	(name,password,phone,departmentid,entrytime,sex,created_at,updated_at)
+	        	VALUES
+	        	(#{name},#{password},#{phone},#{departmentid},#{entrytime},#{sex},now() , now())
+	</insert>
+	<insert id="addUserRole">
+	    	INSERT INTO
+	        	`t_rbac_userrole`
+	        	(userid,roleid,created_at,updated_at)
+	        	VALUES
+	        	(#{userid},#{roleid}, now() , now())
+	</insert>
+    <!-- 获取用户的详情-->
+	<resultMap id="getSingleUser" type="yinao.qualityLife.model.domain.AdminUser">
+		<id column="userid" property="userid"/>
+		<result column="name" property="name"/>
+		<result column="phone" property="phone"/>
+		<result column="department" property="department"/>
+		<result column="role" property="role"/>		
+		<result column="entrytime" property="entrytime"/>
+		<result column="position" property="position"/>
+		<result column="sex" property="sex"/>
+	</resultMap>
+    <select id="getSingleUser" resultMap="getSingleUser">
+    	SELECT
+			`t_rbac_user`.userid,
+			`t_rbac_user`.name,
+			`t_rbac_user`.phone,
+			`t_rbac_department`.name as department,
+			`t_rbac_role`.rolename as role,
+			`t_rbac_user`.entrytime,
+			`t_rbac_user`.position,
+			`t_rbac_user`.sex,
+			`t_rbac_user`.departmentid,
+			`t_rbac_role`.roleid
+		FROM 
+			`t_rbac_user`,
+		 	`t_rbac_department`,
+		  	`t_rbac_role`,
+		  	`t_rbac_userrole`
+		 WHERE
+		 	t_rbac_user.userid=t_rbac_userrole.userid
+		 	and t_rbac_role.roleid=t_rbac_userrole.roleid
+		 	and t_rbac_user.departmentid=t_rbac_department.id
+		 	and t_rbac_user.state=1
+		 	and t_rbac_role.state=1
+		 	and t_rbac_department.state=1
+		 	and t_rbac_user.userid=#{userid}
+    </select>
+    <!-- 编辑用户信息 -->
+    <update id="saveUpdateUser" >
+ 		update `t_rbac_user` 
+ 		<set>
+ 			name=#{name},
+ 			phone=#{phone},
+ 			departmentid=#{departmentid},
+ 			entrytime=#{entrytime},
+ 			sex=#{sex},
+ 			updated_at=now()
+ 		</set>
+ 			where userid=#{userid}
+	</update>
+	 <update id="saveUserRole" >
+ 		update `t_rbac_userrole` 
+ 		<set>
+ 			roleid=#{roleid},
+ 			updated_at=now()
+ 		</set>
+ 			where userid=#{userid}
+	</update>
+    <!-- 删除用户信息 -->
+    <update id="deleteUser" >
+ 		update `t_rbac_user` 
+ 		<set>
+ 			state=0,
+ 			updated_at=now()
+ 		</set>
+ 			where userid=#{userid}
+	</update>
+	 <!-- 获取部门列表-->
+	<resultMap id="departmentList" type="yinao.qualityLife.model.domain.Department">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="describe" property="describe"/>
+	</resultMap>
+    <select id="departmentList" resultMap="departmentList">
+    	SELECT
+			`t_rbac_department`.id,
+			`t_rbac_department`.name,
+			`t_rbac_department`.describes
+		FROM 
+		 	`t_rbac_department`
+		 WHERE
+			t_rbac_department.state=1
+		ORDER BY 
+			`t_rbac_department`.id desc
+		LIMIT #{offset},#{pageSize}
+    </select>
+     <!-- 获取部门总数-->
+	<resultMap id="getDepartmentCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getDepartmentCount" resultMap="getDepartmentCount">
+    	SELECT
+			count(*) as count
+		FROM 
+		 	`t_rbac_department`
+		 WHERE
+			t_rbac_department.state=1
+    </select>
+     <!-- 判断部门是否已添加-->
+	<resultMap id="getDepartmentCounts" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getDepartmentCounts" resultMap="getDepartmentCounts">
+    	SELECT
+			count(*) as count
+		FROM 
+		 	`t_rbac_department`
+		 WHERE
+			t_rbac_department.state=1
+			and t_rbac_department.name=#{name}
+    </select>
+    <!-- 添加部门 -->
+    <insert id="addDepartment">
+	    	INSERT INTO
+	        	`t_rbac_department`
+	        	(created_at,updated_at,name,describes)
+        	VALUES
+	        	(now() , now(),#{name},#{describes})
+	</insert>
+	 <!-- 获取部门的详情-->
+	<resultMap id="getSingleDepartment" type="yinao.qualityLife.model.domain.Department">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+	</resultMap>
+    <select id="getSingleDepartment" resultMap="getSingleDepartment">
+    	SELECT
+			`t_rbac_department`.id,
+			`t_rbac_department`.name,
+			`t_rbac_department`.describes
+		FROM	
+		 	`t_rbac_department`
+		 WHERE
+			 t_rbac_department.state=1
+		 	and t_rbac_department.id=#{id}
+    </select>
+    <!-- 保存编辑部门信息 -->
+    <update id="saveUpdateDepartment" >
+ 		update `t_rbac_department` 
+ 		<set>
+ 			name=#{name},
+ 			describes=#{describes},
+ 			updated_at=now()
+ 		</set>
+ 			where id=#{id}
+	</update>
+	 <!-- 获取部门用户-->
+	<resultMap id="departmentUserCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="departmentUserCount" resultMap="departmentUserCount">
+    	SELECT
+			count(*) as count
+		FROM	
+		 	`t_rbac_user`
+		 WHERE
+			 t_rbac_user.state=1
+		 	and t_rbac_user.departmentid=#{id}
+    </select>
+    <!-- 删除部门信息 -->
+    <update id="deletePartment" >
+ 		update `t_rbac_department` 
+ 		<set>
+ 			state=0,
+ 			updated_at=now()
+ 		</set>
+ 			where id=#{id}
+	</update>
+	 <!-- 获取角色总数-->
+	<resultMap id="getRoleCounts" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getRoleCounts" resultMap="getRoleCounts">
+    	SELECT
+			count(*) as count
+		FROM	
+		 	`t_rbac_role`
+		 WHERE
+			 t_rbac_role.state=1
+    </select>
+    <!-- 获取角色列表-->
+	<resultMap id="roleList" type="yinao.qualityLife.model.domain.Role">
+		<id column="roleid" property="roleid"/>
+		<result column="rolename" property="rolename"/>
+		<result column="created_at" property="created_at"/>
+	</resultMap>
+    <select id="roleList" resultMap="roleList">
+    	SELECT
+			`t_rbac_role`.roleid,
+			`t_rbac_role`.rolename,
+			`t_rbac_role`.created_at
+		FROM 
+		 	`t_rbac_role`
+		 WHERE
+			t_rbac_role.state=1
+		ORDER BY 
+			`t_rbac_role`.roleid desc
+		LIMIT #{offset},#{pageSize}
+    </select>
+     <!-- 添加角色-->
+    <insert id="addRole">
+	    	INSERT INTO
+	        	`t_rbac_role`
+	        	(created_at,updated_at,rolename,state)
+        	VALUES
+	        	(now() , now(),#{rolename},1)
+	</insert>
+	<!-- 获取角色详情-->
+	<resultMap id="getSingleRole" type="yinao.qualityLife.model.domain.Role">
+		<id column="roleid" property="roleid"/>
+		<result column="rolename" property="rolename"/>
+		<result column="created_at" property="created_at"/>
+	</resultMap>
+    <select id="getSingleRole" resultMap="getSingleRole">
+    	SELECT
+			`t_rbac_role`.roleid,
+			`t_rbac_role`.rolename,
+			`t_rbac_role`.created_at
+		FROM 
+		 	`t_rbac_role`
+		 WHERE
+			t_rbac_role.state=1
+			and t_rbac_role.roleid=#{roleid}		
+    </select>
+    <!-- 保存编辑角色信息 -->
+    <update id="saveUpdateRole" >
+ 		update `t_rbac_role` 
+ 		<set>
+ 			rolename=#{rolename},
+ 			updated_at=now()
+ 		</set>
+ 			where roleid=#{roleid}
+	</update>
+	 <!-- 获取部门用户-->
+	<resultMap id="roleUserCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="roleUserCount" resultMap="roleUserCount">
+    	SELECT
+			count(*) as count
+		FROM	
+		 	`t_rbac_user`,
+		 	`t_rbac_userrole`,
+		 	`t_rbac_role`
+		 WHERE
+		 	 t_rbac_user.userid=t_rbac_userrole.userid
+		 	 and t_rbac_role.roleid=t_rbac_userrole.roleid
+			 and t_rbac_user.state=1
+			 and t_rbac_role.state=1
+	 		 and t_rbac_role.roleid=#{roleid}
+    </select>
+    <!-- 删除部门信息 -->
+    <update id="deleteRole" >
+ 		update `t_rbac_role` 
+ 		<set>
+ 			state=0,
+ 			updated_at=now()
+ 		</set>
+ 			where roleid=#{roleid}
+	</update>
+	<!-- 获取权限列表-->
+	<resultMap id="getParentAuths" type="yinao.qualityLife.model.domain.Permission">
+		<id column="permissionid" property="permissionid"/>
+		<result column="permissionname" property="permissionname"/>
+		<result column="pid" property="pid"/>
+	</resultMap>
+    <select id="getParentAuths" resultMap="getParentAuths">
+    	SELECT
+			`t_rbac_permission`.permissionid,
+			`t_rbac_permission`.permissionname,
+			`t_rbac_permission`.pid
+		FROM 
+		 	`t_rbac_permission`
+		 WHERE
+			t_rbac_permission.level=1
+			and t_rbac_permission.pid=0		
+    </select>
+    <resultMap id="getChildAuths" type="yinao.qualityLife.model.domain.Permission">
+		<id column="permissionid" property="permissionid"/>
+		<result column="permissionname" property="permissionname"/>
+		<result column="pid" property="pid"/>
+	</resultMap>
+    <select id="getChildAuths" resultMap="getChildAuths">
+    	SELECT
+			`t_rbac_permission`.permissionid,
+			`t_rbac_permission`.permissionname,
+			`t_rbac_permission`.pid
+		FROM 
+		 	`t_rbac_permission`
+		 WHERE
+			t_rbac_permission.level=2
+			and t_rbac_permission.pid=#{pid}
+    </select>
+     <resultMap id="getRoleAuths" type="yinao.qualityLife.model.domain.Permission">
+		<id column="permissionid" property="permissionid"/>
+		<result column="permissionname" property="permissionname"/>
+		<result column="pid" property="pid"/>
+	</resultMap>
+    <select id="getRoleAuths" resultMap="getRoleAuths">
+    	SELECT
+			`t_rbac_rolepermission`.permissionid
+			FROM
+			t_rbac_rolepermission LEFT JOIN t_rbac_permission on t_rbac_rolepermission.permissionid=t_rbac_permission.permissionid
+		 WHERE
+		 	  t_rbac_permission.pid=#{pid}
+			 and t_rbac_rolepermission.roleid=#{roleid}
+			 or t_rbac_rolepermission.permissionid=#{pid}
+			 and t_rbac_rolepermission.roleid=#{roleid}
+    </select>
+    <!--角色拥有的权限个数  -->
+    <resultMap id="getRoleAuthCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+		
+	</resultMap>
+    <select id="getRoleAuthCount" resultMap="getRoleAuthCount">
+    	SELECT
+			count(*) as count
+		FROM 
+		 	t_rbac_rolepermission
+		 WHERE
+			t_rbac_rolepermission.roleid=#{roleid}
+    </select>
+    <!-- 删除角色原有的权限 -->
+	<delete id="deleteRoleAuth">
+			DELETE FROM  `t_rbac_rolepermission` 
+			WHERE
+				roleid=#{roleid}
+	</delete>
+	 <!-- 添加角色权限-->
+    <insert id="addRoleAuth">
+	    	INSERT INTO
+	        	`t_rbac_rolepermission`
+	        	(created_at,updated_at,roleid,permissionid)
+        	VALUES
+	        	(now() , now(),#{roleid},#{value})
+	</insert>
+	 <!-- 部门下拉列表-->
+	<resultMap id="selectDepartment" type="yinao.qualityLife.model.domain.Department">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+	</resultMap>
+    <select id="selectDepartment" resultMap="selectDepartment">
+    	SELECT
+			`t_rbac_department`.id,
+			`t_rbac_department`.name
+		FROM 
+		 	`t_rbac_department`
+		 WHERE
+			t_rbac_department.state=1
+    </select>
+    <!-- 角色下拉框-->
+	<resultMap id="selectRole" type="yinao.qualityLife.model.domain.Role">
+		<id column="roleid" property="roleid"/>
+		<result column="rolename" property="rolename"/>
+	</resultMap>
+    <select id="selectRole" resultMap="selectRole">
+    	SELECT
+			`t_rbac_role`.roleid,
+			`t_rbac_role`.rolename
+		FROM 
+		 	`t_rbac_role`
+		 WHERE
+			t_rbac_role.state=1
+    </select>
+      <!-- 后台登录验证 -->
+	<resultMap id="getLoginPhoneCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getLoginPhoneCount" resultMap="getLoginPhoneCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_rbac_user`
+		 WHERE
+		 	 t_rbac_user.state=1
+		 	 and phone=#{phone}
+		 	 and password=#{password}
+    </select>
+     <!-- 获取用户登录信息-->
+	<resultMap id="getAdminUser" type="yinao.qualityLife.model.domain.AdminUser">
+		<id column="userid" property="userid"/>
+		<result column="name" property="name"/>
+		<result column="phone" property="phone"/>
+	</resultMap>
+    <select id="getAdminUser" resultMap="getAdminUser">
+    	SELECT
+			`t_rbac_user`.userid,
+			`t_rbac_user`.name,
+			`t_rbac_user`.phone
+		FROM 
+			`t_rbac_user` 	
+		 WHERE
+		 	t_rbac_user.state=1
+		 	and t_rbac_user.phone=#{phone}
+		 	and t_rbac_user.password=#{password}
+    </select>
+    <!-- 获取后台用户的一级权限列表 -->
+	<resultMap id="getUserAuth" type="yinao.qualityLife.model.domain.Permission">
+	</resultMap>
+    <select id="getUserAuth" resultMap="getUserAuth">
+    	SELECT
+			`t_rbac_permission`.*
+		FROM t_rbac_userrole LEFT JOIN t_rbac_rolepermission ON  t_rbac_userrole.roleid = t_rbac_rolepermission.roleid 
+							LEFT JOIN t_rbac_permission ON t_rbac_permission.permissionid = t_rbac_rolepermission.permissionid  
+		 WHERE
+		 	
+		 	t_rbac_userrole.userid=#{userid}
+		 	and t_rbac_permission.level="1"	 	
+    </select>
+    <!-- 获取后台用户的二级权限列表 -->
+	<resultMap id="getUserAuthChild" type="yinao.qualityLife.model.domain.Permission">
+	</resultMap>
+    <select id="getUserAuthChild" resultMap="getUserAuthChild">
+    	SELECT
+			`t_rbac_permission`.*
+		FROM t_rbac_userrole LEFT JOIN t_rbac_rolepermission ON  t_rbac_userrole.roleid = t_rbac_rolepermission.roleid 
+							LEFT JOIN t_rbac_permission ON t_rbac_permission.permissionid = t_rbac_rolepermission.permissionid  
+		 WHERE
+		 	
+		 	t_rbac_userrole.userid=#{userid}
+		 	and t_rbac_permission.level="2"	 	
+    </select>
+    <!-- 获取后台用户的权限id列表 -->
+	<resultMap id="getUserPath" type="yinao.qualityLife.model.domain.Permission">
+	</resultMap>
+    <select id="getUserPath" resultMap="getUserPath">
+    	SELECT
+			`t_rbac_permission`.*
+		FROM t_rbac_userrole LEFT JOIN t_rbac_rolepermission ON  t_rbac_userrole.roleid = t_rbac_rolepermission.roleid 
+							LEFT JOIN t_rbac_permission ON t_rbac_permission.permissionid = t_rbac_rolepermission.permissionid  
+		 WHERE
+		 	
+		 	t_rbac_userrole.userid=#{userid}	
+    </select>
+     <!-- 重置密码 -->
+    <update id="updatePwd" >
+ 		update `t_rbac_user` 
+ 		<set>
+ 			password=#{password},
+ 			updated_at=now()
+ 		</set>
+ 			where phone=#{phone}
+	</update>
+	<!-- 获取后台用户密码 -->
+	<resultMap id="getOldPwd" type="yinao.qualityLife.model.domain.AdminUser">
+	</resultMap>
+    <select id="getOldPwd" resultMap="getOldPwd">
+    	SELECT
+			`t_rbac_user`.password
+		FROM 
+			t_rbac_user  
+		 WHERE
+		 	phone=#{phone}	
+    </select>
+</mapper>

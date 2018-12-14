@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.CourseMapper">
+
+    <resultMap id="getUserFromDatabaseMap" type="yinao.qualityLife.model.domain.Course">
+        <id column="ocid" property="ocid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="cid" property="cid"/>
+        <result column="duration" property="duration"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+    </resultMap>
+
+    <insert id="addcourse"   >
+        INSERT INTO
+        `t_order_course`
+        (hkid,cid,duration,create_time , state)
+        VALUES
+        (#{hkid},#{cid},#{duration},now() , "1" )
+    </insert>
+
+    <update id="editcourse" >
+        update t_order_course
+        <set>
+            hkid=#{hkid},
+            cid=#{cid},
+            duration=#{duration},
+            update_time=now()
+        </set>
+        where ocid=#{ocid}
+    </update>
+
+    <update id="deletecourse" >
+        update t_order_course
+        <set>
+            state="0",update_time=now()
+        </set>
+        where ocid=#{ocid}
+    </update>
+
+</mapper>

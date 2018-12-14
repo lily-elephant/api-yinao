@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.HouseKeeperMapper">
+
+	<resultMap id="getUserFromDatabaseMap" type="yinao.qualityLife.model.domain.HouseKeeper">
+        <id column="hkid" property="hkid"/>
+        <result column="username" property="username"/>
+        <result column="name" property="name"/>
+        <result column="headimageurl" property="headimageurl"/>
+        <result column="password" property="password"/>
+        <result column="idcard" property="idcard"/>
+        <result column="education" property="education"/>
+        <result column="address3" property="address3"/>
+        <result column="address2" property="address2"/>
+        <result column="address1" property="address1"/>
+        <result column="sex" property="sex"/> 
+        <result column="create_time" property="create_time"/>
+        <result column="role_id" property="role_id"/>
+        <result column="state" property="state"/> 
+        <result column="brief" property="brief"/> 
+        <result column="salary" property="salary"/> 
+        <result column="workdate" property="workdate"/> 
+        <result column="servicestate" property="servicestate"/>         
+        <result column="marry" property="marry"/>
+        <result column="isdrive" property="isdrive"/>
+        <result column="describes" property="describes"/>
+        <result column="nativeplace" property="nativeplace"/>
+    </resultMap>
+    
+    
+    <resultMap id="getCount" type="yinao.qualityLife.model.domain.LikeBean">
+        <id column="lid" property="lid"/>
+        <result column="username" property="username"/>
+        <result column="usertype" property="usertype"/>
+    </resultMap>
+    
+    <resultMap id="getComment" type="yinao.qualityLife.model.domain.EmployerComment">
+        <id column="cid" property="cid"/>
+        <result column="emid" property="emid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="score" property="score"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="create_time"/>
+        <result column="headimageurl" property="headimageurl"/>
+        <result column="username" property="username"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    
+    <resultMap id="getCertificate" type="yinao.qualityLife.model.domain.HousekeeperCertificate">
+        <id column="hkcid" property="hkcid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="cid" property="cid"/>
+        <result column="picture" property="picture"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    
+    <select id="certificatelist" resultMap="getCertificate">
+    	SELECT 
+    		`t_base_housekeeper_certificate`.hkcid,
+    		`t_base_housekeeper_certificate`.hkid,
+    		`t_base_housekeeper_certificate`.cid,
+    		`t_base_housekeeper_certificate`.picture,
+    		`t_base_housekeeper_certificate`.state,
+    		`t_base_housekeeper_certificate`.create_time,
+    		`t_source_certificate`.name
+
+    	FROM 
+    		t_base_housekeeper_certificate ,
+    		t_source_certificate
+         WHERE
+		 	t_base_housekeeper_certificate.cid=t_source_certificate.cid
+		 	and t_base_housekeeper_certificate.hkid=#{hkid}
+		 	and t_base_housekeeper_certificate.state='1'
+		 	
+    </select>
+    
+    <select id="housekeepercomment" resultMap="getComment">
+    	SELECT 
+    		`t_order_comment`.cid,
+    		`t_order_comment`.emid,
+    		`t_order_comment`.hkid,
+    		`t_order_comment`.score,
+    		`t_order_comment`.content,
+    		`t_order_comment`.create_time,
+    		`t_base_housekeeper`.headimageurl,
+    		`t_base_housekeeper`.username,
+    		`t_base_housekeeper`.name
+    	FROM 
+    		t_base_housekeeper ,
+    		t_order_comment
+         WHERE
+		 	t_order_comment.hkid=t_base_housekeeper.hkid
+		 	and t_order_comment.hkid=#{hkid}
+		 	and t_order_comment.state = 1
+		 	<if test="emid != null and emid != ''">
+        		and t_order_comment.emid = #{emid}
+        	</if>
+        ORDER BY
+        	create_time desc
+    </select>
+    
+    <select id="adminhouseKeeperList" resultMap="getUserFromDatabaseMap">
+    	SELECT * FROM `t_base_housekeeper` 
+        <where>
+        	<if test="username != null and username != ''">
+        		and username like CONCAT('%',#{username},'%')
+        	</if>
+        	<if test="name != null and name != ''">
+        		and name =like CONCAT('%',#{name},'%')
+        	</if>
+        	<if test="state != null and state != ''">
+        		and state = #{state}
+        	</if>
+        	<if test="servicestate != null and servicestate != ''">
+        		and servicestate = #{servicestate}
+        	</if>
+        </where>
+        ORDER BY
+  			create_time desc 
+    </select>
+    
+    <select id="houseKeeperList" resultMap="getUserFromDatabaseMap">
+    	SELECT * FROM `t_base_housekeeper` 
+        <where>
+        	state != "0"
+        	<if test="username != null and username != ''">
+        		and username like CONCAT('%',#{username},'%')
+        	</if>
+        	<if test="name != null and name != ''">
+        		and name like CONCAT('%',#{name},'%')
+        	</if>
+        	<if test="state != null and state != ''">
+        		and state = #{state}
+        	</if>
+        </where>
+        ORDER BY
+  			create_time desc 
+    </select>
+    
+    <select id="houseKeeperLikeCount" resultMap="getCount">
+    	SELECT lid , username , usertype FROM `t_base_like` 
+        where hkid=#{hkid}
+    </select>
+    
+    <update id="updateEmployerInfo" >
+  		update t_base_housekeeper
+	    <set>
+	    	<if test="servicestate != null and servicestate != ''">servicestate=#{servicestate},</if> 
+			<if test="name != null and name != ''">name=#{name},</if> 
+			<if test="headimageurl != null and headimageurl != ''">headimageurl=#{headimageurl},</if>
+			<if test="idcard != null and idcard != ''">idcard=#{idcard},</if>
+			<if test="education != null and education != ''">education=#{education},</if>
+			<if test="address1 != null and address1 != ''">address1=#{address1},</if>
+			<if test="address2 != null and address2 != ''">address2=#{address2},</if>
+			<if test="address3 != null and address3 != ''">address3=#{address3},</if>
+			<if test="sex != null and sex != ''">sex=#{sex},</if>
+			<if test="brief != null and brief != ''">brief=#{brief},</if>
+			<if test="salary != null and salary != ''">salary=#{salary},</if>
+			<if test="workdate != null and workdate != ''">workdate=#{workdate},</if>
+			update_time=now(),
+			<if test="role_id != null and role_id != ''">role_id=#{role_id},</if>
+			<!-- <if test="state != null and state != ''">state=#{state}</if> -->
+			<if test="marry != null and marry != ''">marry=#{marry},</if>
+			<if test="isdrive != null and isdrive != ''">isdrive=#{isdrive},</if>
+			<if test="describes != null and describes != ''">describes=#{describes},</if>
+			<if test="nativeplace != null and nativeplace != ''">nativeplace=#{nativeplace},</if>
+	    </set>
+  		where username=#{username}
+	</update>
+	
+	<update id="deletehousekeeper" >
+  		update t_base_housekeeper
+  		<set>
+	    state="0"
+	    </set>
+  		where username=#{username}
+	</update>
+	
+	<update id="showhousekeeper" >
+  		update t_base_housekeeper
+  		<set>
+	    state=#{state}
+	    </set>
+  		where username=#{username}
+	</update>
+	
+	<insert id="addhousekeeper"  parameterType="yinao.qualityLife.model.domain.HouseKeeper" >
+	
+	<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="hkid">
+          SELECT LAST_INSERT_ID()
+      	</selectKey>
+      	
+    	INSERT INTO
+        	`t_base_housekeeper`
+        	(username,name,headimageurl,idcard,education,address1,address2,address3,sex,role_id,state , create_time , salary , password ,servicestate , marry , isdrive , describes , nativeplace )  
+        	VALUES
+        	(#{username},#{name},#{headimageurl},#{idcard},#{education},#{address1},#{address2},#{address3},#{sex},'1' , '0',  now() , #{salary} ,#{password},'0',#{marry},#{isdrive},#{describes},#{nativeplace})
+   </insert>
+   
+   
+   <insert id="addCertificate"   >
+    	INSERT INTO
+        	`t_base_housekeeper_certificate`
+        	(hkid , cid , picture , state , create_time)
+        	VALUES
+        	(#{hkid},#{cid},#{picture}, '1', now() )
+   </insert>
+   
+   
+   <update id="deleteCertificate" >
+  		update t_base_housekeeper_certificate
+  		<set>
+	    state="0",update_time = now()
+	    </set>
+  		where hkid=#{hkid}
+  		and cid=#{cid}
+	</update>
+   
+   
+   
+    
+    
+    
+    
+
+
+    
+           
+
+</mapper>

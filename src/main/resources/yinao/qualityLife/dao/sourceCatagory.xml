@@ -1,0 +1,914 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.sourceMapper">
+	<!-- 添加资源目录 -->
+	 <insert id="addCatagory"   >
+	    	INSERT INTO
+	        	`t_source_sourcecatagory`
+	        	(name,sort,parentid,sourcetype,level,create_at,create_time,update_time)
+	        	VALUES
+	        	(#{name}, #{sort},#{parentid},#{sourcetype},#{level},#{create_at}, now() , now())
+	</insert>
+	 <!-- 获取资源目录详情 -->
+    <resultMap id="getDetailCatagory" type="yinao.qualityLife.model.domain.SourceCatagory">
+		<id column="scid" property="scid"/>
+		<result column="name" property="name"/>
+		<result column="sourcetype" property="sourcetype"/>
+		<result column="parentid" property="parentid"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+		<result column="level" property="level"/> 
+	</resultMap>
+    <select id="getDetailCatagory" resultMap="getDetailCatagory">
+    	SELECT
+			`t_source_sourcecatagory`.scid,
+			`t_source_sourcecatagory`.sourcetype,
+			`t_source_sourcecatagory`.parentid,
+			`t_source_sourcecatagory`.name,
+			`t_source_sourcecatagory`.sort,
+			`t_source_sourcecatagory`.create_time,
+			`t_source_sourcecatagory`.update_time,
+			`t_source_sourcecatagory`.create_at,
+			`t_source_sourcecatagory`.update_at,
+			`t_source_sourcecatagory`.level
+		FROM 
+			`t_source_sourcecatagory`
+		WHERE
+			 `t_source_sourcecatagory`.state=1
+			 and `t_source_sourcecatagory`.scid=#{scid}
+    </select>  
+    <update id="editCatagory" >
+ 		update `t_source_sourcecatagory` 
+ 		<set>
+ 			name=#{name},
+ 			sort=#{sort},
+ 			parentid=#{parentid},
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where scid=#{scid}
+	</update>
+	<update id="deleteCatagory" >
+ 		update `t_source_sourcecatagory` 
+ 		<set>
+ 			state=0,
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where scid=#{scid}
+	</update>
+	<insert id="addArticle"   >
+	    	INSERT INTO
+	        	`t_source_article`
+	        	(name,sort,brief,content,scid,create_at,create_time,update_time)
+	        	VALUES
+	        	(#{name}, #{sort},#{brief},#{content},#{scid},#{create_at}, now() , now())
+	</insert>
+ 	<update id="editArticle" >
+ 		update `t_source_article` 
+ 		<set>
+ 			name=#{name},
+ 			sort=#{sort},
+ 			brief=#{brief},
+ 			content=#{content},
+ 			update_at=#{update_at},
+ 			<if test="scid != null and scid != ''">
+		  		scid=#{scid},
+			</if>
+ 			update_time=now()
+ 		</set>
+ 			where aid=#{aid}
+	</update>
+	<update id="deleteArticle" >
+ 		update `t_source_article` 
+ 		<set>
+ 			state=0,
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where aid=#{aid}
+	</update>
+	<insert id="addBanner"   >
+	    	INSERT INTO
+	        	`banner`
+	        	(pid,aid,name,product,sort,create_at,create_time,update_time)
+	        	VALUES
+	        	(#{pid}, #{aid},#{name},#{product},#{sort},#{create_at}, now() , now())
+	</insert>
+	<update id="editBanner" >
+ 		update `banner` 
+ 		<set>
+ 			name=#{name},
+ 			pid=#{pid},
+ 			aid=#{aid},
+ 			product=#{product},
+ 			sort=#{sort},
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where bannerid=#{bannerid}
+	</update>
+	<update id="deleteBanner" >
+ 		update `banner` 
+ 		<set>
+ 			state=0,
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where bannerid=#{bannerid}
+	</update>
+	<insert id="addPicture"   >
+	    	INSERT INTO
+	        	`t_source_picture`
+	        	(scid,name,path,sort,size,width,height,create_at,create_time,update_time)
+	        	VALUES
+	        	(#{scid}, #{name},#{path},#{sort},#{size},#{width},#{height},#{create_at}, now() , now())
+	</insert>
+	<update id="editPicture" >
+ 		update `t_source_picture` 
+ 		<set>
+ 			name=#{name},
+ 			scid=#{scid},
+ 			path=#{path},
+ 			size=#{size},
+ 			width=#{width},
+ 			height=#{height},
+ 			sort=#{sort},
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where pid=#{pid}
+	</update>
+	<update id="deletePicture" >
+ 		update `t_source_picture` 
+ 		<set>
+ 			state=0,
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where pid=#{pid}
+	</update>
+	<insert id="addVideo"   >
+	    	INSERT INTO
+	        	`t_source_video`
+	        	(scid,name,path,sort,size,duration,create_at,create_time,update_time)
+	        	VALUES
+	        	(#{scid}, #{name},#{path},#{sort},#{size},#{duration},#{create_at}, now() , now())
+	</insert>
+	<update id="editVideo" >
+ 		update `t_source_video` 
+ 		<set>
+ 			name=#{name},
+ 			scid=#{scid},
+ 			path=#{path},
+ 			size=#{size},
+ 			duration=#{duration},
+ 			sort=#{sort},
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where vid=#{vid}
+	</update>
+	<update id="deleteVideo" >
+ 		update `t_source_video` 
+ 		<set>
+ 			state=0,
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where vid=#{vid}
+	</update>
+    
+    <resultMap id="getArticleDatabaseMap" type="yinao.qualityLife.model.domain.SourceArticle">
+		<id column="aid" property="aid"/>
+		<result column="name" property="name"/>
+		<result column="brief" property="brief"/>
+		<result column="sort" property="sort"/>
+		<result column="content" property="content"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+ 	
+ 	<!-- 获取图文模块列表 -->
+    <select id="getArticleList" resultMap="getArticleDatabaseMap">
+    	SELECT
+			`t_source_article`.aid,
+			`t_source_article`.name,
+			`t_source_article`.brief,
+			`t_source_article`.content,
+			`t_source_article`.sort,
+			`t_source_article`.create_time,
+			`t_source_article`.update_time
+		FROM 
+			`t_source_article`
+		WHERE
+		`t_source_article`.state=1
+		<if test="aid != null and aid != ''">
+			AND	aid=#{aid}
+		</if>
+		<if test="name != null and name != ''">
+		  	AND	name=#{name}
+		</if>
+		ORDER BY `t_source_article`.update_time desc
+		LIMIT #{offset},#{pageSize}	
+    </select>
+    <!-- 图文列表总数 -->
+     <resultMap id="getArticleCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getArticleCount" resultMap="getArticleCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_source_article`
+		WHERE
+		`t_source_article`.state=1
+		<if test="aid != null and aid != ''">
+			AND	aid=#{aid}
+		</if>
+		<if test="name != null and name != ''">
+		  	AND	name=#{name}
+		</if>
+    </select>
+    <!-- 获取图文详情 -->
+      <resultMap id="getDetailArticle" type="yinao.qualityLife.model.domain.SourceArticle">
+		<id column="aid" property="aid"/>
+		<result column="name" property="name"/>
+		<result column="brief" property="brief"/>
+		<result column="sort" property="sort"/>
+		<result column="content" property="content"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getDetailArticle" resultMap="getDetailArticle">
+    	SELECT
+			`t_source_article`.aid,
+			`t_source_article`.name,
+			`t_source_article`.scid,
+			`t_source_article`.brief,
+			`t_source_article`.content,
+			`t_source_article`.sort,
+			`t_source_article`.create_time,
+			`t_source_article`.update_time
+		FROM 
+			`t_source_article`
+		WHERE
+		`t_source_article`.state=1
+		and `t_source_article`.aid=#{aid}
+    </select>
+    <!-- 获取banner列表 -->
+     <resultMap id="getBannerDatabaseMap" type="yinao.qualityLife.model.domain.Banner">
+		<id column="bannerid" property="bannerid"/>
+		<result column="name" property="name"/>
+		<result column="pid" property="pid"/>
+		<result column="aid" property="aid"/>
+		<result column="picture" property="picture"/>
+		<result column="article" property="article"/>
+		<result column="product" property="product"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getBannerList" resultMap="getBannerDatabaseMap">
+    	SELECT
+			`banner`.bannerid,
+			`banner`.pid,
+			`banner`.aid,
+			`banner`.name,
+			`t_source_picture`.path as picture,
+			`t_source_article`.content as article,
+			`banner`.product,
+			`banner`.sort,
+			`banner`.state,
+			`banner`.create_time,
+			`banner`.update_time,
+			`banner`.create_at,
+			`banner`.update_at
+		FROM 
+			`banner`,
+			`t_source_picture`,
+			`t_source_article`
+		WHERE
+			`banner`.aid=`t_source_article`.aid
+			 and `banner`.pid=`t_source_picture`.pid
+			 and `banner`.state=1
+			 and `t_source_article`.state=1
+			 and `t_source_article`.state=1
+		<if test="bid != null and bid != ''">
+		  	AND	bannerid=#{bid}
+		</if>
+		<if test="name != null and name != ''">
+			AND name=#{name}
+		</if>
+		<if test="product != null and product != ''">
+			AND product=#{product}
+		</if>
+		ORDER BY `banner`.sort desc,`banner`.update_time desc
+		LIMIT #{offset},#{pageSize}
+			
+    </select>
+      <!-- 获取banner后台搜索列表 -->
+     <resultMap id="getBannerLists" type="yinao.qualityLife.model.domain.Banner">
+		<id column="bannerid" property="bannerid"/>
+		<result column="name" property="name"/>
+		<result column="pid" property="pid"/>
+		<result column="aid" property="aid"/>
+		<result column="picture" property="picture"/>
+		<result column="article" property="article"/>
+		<result column="product" property="product"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getBannerLists" resultMap="getBannerLists">
+    	SELECT
+			`banner`.bannerid,
+			`banner`.pid,
+			`banner`.aid,
+			`banner`.name,
+			`t_source_picture`.path as picture,
+			`t_source_article`.content as article,
+			`banner`.product,
+			`banner`.sort,
+			`banner`.state,
+			`banner`.create_time,
+			`banner`.update_time,
+			`banner`.create_at,
+			`banner`.update_at
+		FROM 
+			`banner`,
+			`t_source_picture`,
+			`t_source_article`
+		WHERE
+		  	<if test="state !=0 ">
+		  		`banner`.aid=`t_source_article`.aid
+				 and `banner`.pid=`t_source_picture`.pid
+				 and `t_source_article`.state=1
+				 and `t_source_picture`.state=1
+				 and banner.state=#{state}
+			</if>
+			 <if test="state ==0 ">
+		  		`banner`.aid=`t_source_article`.aid
+				 and `banner`.pid=`t_source_picture`.pid
+				 and `t_source_article`.state=1
+				 and `t_source_picture`.state=1
+				 and banner.state=1
+				 or`banner`.aid=`t_source_article`.aid
+				 and `banner`.pid=`t_source_picture`.pid
+				 and `t_source_article`.state=1
+				 and `t_source_picture`.state=1
+				 and banner.state=2
+			</if>
+		<if test="bid != null and bid != ''">
+		  	AND	bannerid=#{bid}
+		</if>
+		<if test="name != null and name != ''">
+			AND name=#{name}
+		</if>
+		<if test="product != null and product != ''">
+			AND product=#{product}
+		</if>
+		ORDER BY `banner`.update_time desc
+		LIMIT #{offset},#{pageSize}
+			
+    </select>
+     <!-- 获取banner列表搜索总数 -->
+     <resultMap id="getBannerCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getBannerCount" resultMap="getBannerCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`banner`,
+			`t_source_picture`,
+			`t_source_article`
+		WHERE
+			<if test="state !=0 ">
+		  		`banner`.aid=`t_source_article`.aid
+				 and `banner`.pid=`t_source_picture`.pid
+				 and `t_source_article`.state=1
+				 and `t_source_picture`.state=1
+				 and banner.state=#{state}
+			</if>
+			 <if test="state ==0 ">
+		  		`banner`.aid=`t_source_article`.aid
+				 and `banner`.pid=`t_source_picture`.pid
+				 and `t_source_article`.state=1
+				 and `t_source_picture`.state=1
+				 and banner.state=1
+				 or`banner`.aid=`t_source_article`.aid
+				 and `banner`.pid=`t_source_picture`.pid
+				 and `t_source_article`.state=1
+				 and `t_source_picture`.state=1
+				 and banner.state=2
+			</if>
+		<if test="bid != null and bid != ''">
+		  	AND	bannerid=#{bid}
+		</if>
+		<if test="name != null and name != ''">
+			AND name=#{name}
+		</if>
+		<if test="product != null and product != ''">
+			AND product=#{product}
+		</if>
+    </select>
+      <!-- 获取banner后台列表 -->
+     <resultMap id="getSearchBannerLists" type="yinao.qualityLife.model.domain.Banner">
+		<id column="bannerid" property="bannerid"/>
+		<result column="name" property="name"/>
+		<result column="pid" property="pid"/>
+		<result column="aid" property="aid"/>
+		<result column="picture" property="picture"/>
+		<result column="article" property="article"/>
+		<result column="product" property="product"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getSearchBannerLists" resultMap="getSearchBannerLists">
+    	SELECT
+			`banner`.bannerid,
+			`banner`.pid,
+			`banner`.aid,
+			`banner`.name,
+			`t_source_picture`.path as picture,
+			`t_source_article`.content as article,
+			`banner`.product,
+			`banner`.sort,
+			`banner`.state,
+			`banner`.create_time,
+			`banner`.update_time,
+			`banner`.create_at,
+			`banner`.update_at
+		FROM 
+			`banner`,
+			`t_source_picture`,
+			`t_source_article`
+		WHERE
+			`banner`.aid=`t_source_article`.aid
+			 and `banner`.pid=`t_source_picture`.pid
+			 and `t_source_article`.state=1
+			 and `t_source_picture`.state=1
+			 and banner.state=1
+			 or`banner`.aid=`t_source_article`.aid
+			 and `banner`.pid=`t_source_picture`.pid
+			 and `t_source_article`.state=1
+			 and `t_source_picture`.state=1
+			 and banner.state=2
+		ORDER BY `banner`.update_time desc
+		LIMIT #{offset},#{pageSize}	
+    </select>
+     <!-- 获取后台banner列表总数 -->
+     <resultMap id="getSearchBannerCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getSearchBannerCount" resultMap="getSearchBannerCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`banner`,
+			`t_source_picture`,
+			`t_source_article`
+		WHERE
+			`banner`.aid=`t_source_article`.aid
+			 and `banner`.pid=`t_source_picture`.pid
+			 and `t_source_article`.state=1
+			 and `t_source_picture`.state=1
+			 and banner.state=1
+			 or`banner`.aid=`t_source_article`.aid
+			 and `banner`.pid=`t_source_picture`.pid
+			 and `t_source_article`.state=1
+			 and `t_source_picture`.state=1
+			 and banner.state=2
+    </select>
+     <!-- 获取banner后台详情 -->
+     <resultMap id="getbannerDetail" type="yinao.qualityLife.model.domain.Banner">
+		<id column="bannerid" property="bannerid"/>
+		<result column="name" property="name"/>
+		<result column="pid" property="pid"/>
+		<result column="aid" property="aid"/>
+		<result column="picture" property="picture"/>
+		<result column="article" property="article"/>
+		<result column="product" property="product"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getbannerDetail" resultMap="getbannerDetail">
+    	SELECT
+			`banner`.bannerid,
+			`banner`.pid,
+			`banner`.aid,
+			`banner`.name,
+			`t_source_picture`.path as picture,
+			`t_source_article`.name as article,
+			`banner`.product,
+			`banner`.sort,
+			`banner`.state,
+			`banner`.create_time,
+			`banner`.update_time,
+			`banner`.create_at,
+			`banner`.update_at
+		FROM 
+			`banner`,
+			`t_source_picture`,
+			`t_source_article`
+		WHERE
+			`banner`.aid=`t_source_article`.aid
+			 and `banner`.pid=`t_source_picture`.pid
+			 and `t_source_article`.state=1
+			 and `t_source_picture`.state=1
+			 and banner.bannerid=#{bannerid}
+    </select>
+    <!-- 获取资源目录列表 -->
+    <resultMap id="getCatagoryDatabaseMap" type="yinao.qualityLife.model.domain.SourceCatagory">
+		<id column="scid" property="scid"/>
+		<result column="name" property="name"/>
+		<result column="sourcetype" property="sourcetype"/>
+		<result column="parentid" property="parentid"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+		<result column="level" property="level"/> 
+	</resultMap>
+    <select id="getCatagoryList" resultMap="getCatagoryDatabaseMap">
+    	SELECT
+			`t_source_sourcecatagory`.scid,
+			`t_source_sourcecatagory`.sourcetype,
+			`t_source_sourcecatagory`.parentid,
+			`t_source_sourcecatagory`.name,
+			`t_source_sourcecatagory`.sort,
+			`t_source_sourcecatagory`.create_time,
+			`t_source_sourcecatagory`.update_time,
+			`t_source_sourcecatagory`.create_at,
+			`t_source_sourcecatagory`.update_at,
+			`t_source_sourcecatagory`.level
+		FROM 
+			`t_source_sourcecatagory`
+		WHERE
+			 `t_source_sourcecatagory`.state=1
+			 and `t_source_sourcecatagory`.level=1
+		 	 and `t_source_sourcecatagory`.sourcetype=#{sourcetype}
+		ORDER BY `t_source_sourcecatagory`.sort desc,`t_source_sourcecatagory`.update_time desc
+		LIMIT #{offset},#{pageSize}	
+    </select>  
+    <!-- 获取资源目录总数 -->
+    <resultMap id="getSourcesCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getSourcesCount" resultMap="getSourcesCount">
+    	SELECT
+			count(*) as count
+		FROM 
+			`t_source_sourcecatagory`
+		WHERE
+			 `t_source_sourcecatagory`.state=1
+			 and `t_source_sourcecatagory`.parentid=0
+		 	 and `t_source_sourcecatagory`.sourcetype=#{sourcetype}
+    </select> 
+    <!-- 获取资源子级目录列表 -->
+    <resultMap id="getChildCatagoryList" type="yinao.qualityLife.model.domain.SourceCatagory">
+		<id column="scid" property="scid"/>
+		<result column="name" property="name"/>
+		<result column="sourcetype" property="sourcetype"/>
+		<result column="parentid" property="parentid"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+		<result column="level" property="level"/> 
+	</resultMap>
+    <select id="getChildCatagoryList" resultMap="getChildCatagoryList">
+    	SELECT
+			`t_source_sourcecatagory`.scid,
+			`t_source_sourcecatagory`.sourcetype,
+			`t_source_sourcecatagory`.parentid,
+			`t_source_sourcecatagory`.name,
+			`t_source_sourcecatagory`.sort,
+			`t_source_sourcecatagory`.create_time,
+			`t_source_sourcecatagory`.update_time,
+			`t_source_sourcecatagory`.create_at,
+			`t_source_sourcecatagory`.update_at,
+			`t_source_sourcecatagory`.level
+		FROM 
+			`t_source_sourcecatagory`
+		WHERE
+			 `t_source_sourcecatagory`.state=1
+			 and `t_source_sourcecatagory`.level=2
+		 	 and `t_source_sourcecatagory`.sourcetype=#{sourcetype}
+    </select>
+    
+       <!-- 获取资源子级目录列表 -->
+    <resultMap id="getThreeCatagoryList" type="yinao.qualityLife.model.domain.SourceCatagory">
+		<id column="scid" property="scid"/>
+		<result column="name" property="name"/>
+		<result column="sourcetype" property="sourcetype"/>
+		<result column="parentid" property="parentid"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+		<result column="level" property="level"/> 
+	</resultMap>
+    <select id="getThreeCatagoryList" resultMap="getThreeCatagoryList">
+    	SELECT
+			`t_source_sourcecatagory`.scid,
+			`t_source_sourcecatagory`.sourcetype,
+			`t_source_sourcecatagory`.parentid,
+			`t_source_sourcecatagory`.name,
+			`t_source_sourcecatagory`.sort,
+			`t_source_sourcecatagory`.create_time,
+			`t_source_sourcecatagory`.update_time,
+			`t_source_sourcecatagory`.create_at,
+			`t_source_sourcecatagory`.update_at,
+			`t_source_sourcecatagory`.level
+		FROM 
+			`t_source_sourcecatagory`
+		WHERE
+			 `t_source_sourcecatagory`.state=1
+			 and `t_source_sourcecatagory`.level=3
+		 	 and `t_source_sourcecatagory`.sourcetype=#{sourcetype}
+    </select>
+   
+    <!-- 获取图片列表 -->
+    <resultMap id="getPictureDatabaseMap" type="yinao.qualityLife.model.domain.SourcePicture">
+		<id column="pid" property="pid"/>
+		<result column="scid" property="scid"/>
+		<result column="catagoryname" property="catagoryname"/>
+		<result column="name" property="name"/>
+		<result column="path" property="path"/>
+		<result column="size" property="size"/>
+		<result column="width" property="width"/>
+		<result column="height" property="height"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getPictureList" resultMap="getPictureDatabaseMap">
+    	SELECT
+    		`t_source_picture`.pid,
+			`t_source_picture`.scid,
+			`t_source_sourcecatagory`.name as catagoryname,
+			`t_source_picture`.path,
+			`t_source_picture`.name,
+			`t_source_picture`.size,
+			`t_source_picture`.width,
+			`t_source_picture`.height,
+			`t_source_picture`.sort,
+			`t_source_picture`.create_time,
+			`t_source_picture`.update_time,
+			`t_source_picture`.create_at,
+			`t_source_picture`.update_at
+		FROM 
+			`t_source_sourcecatagory`,
+			`t_source_picture`
+		WHERE
+			`t_source_picture`.scid=`t_source_sourcecatagory`.scid
+			 and `t_source_sourcecatagory`.state=1
+			 and `t_source_picture`.state=1
+		<if test="scid != null and scid != ''">
+			AND `t_source_picture`.scid=#{scid}
+		</if>
+		<if test="name != null and name != ''">
+			AND `t_source_picture`.name=#{name}
+		</if>
+		<if test="catagoryname != null and catagoryname != ''">
+			AND `t_source_sourcecatagory`.name=#{catagoryname}
+		</if>
+		ORDER BY `t_source_picture`.sort desc,`t_source_picture`.update_time desc
+		LIMIT #{offset},#{pageSize}	
+    </select>
+     <!-- 获取图片总数 -->
+    <resultMap id="getPictureCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getPictureCount" resultMap="getPictureCount">
+    	SELECT
+    		count(*) as count
+		FROM 
+			`t_source_sourcecatagory`,
+			`t_source_picture`
+		WHERE
+			`t_source_picture`.scid=`t_source_sourcecatagory`.scid
+			 and `t_source_sourcecatagory`.state=1
+			 and `t_source_picture`.state=1
+		<if test="scid != null and scid != ''">
+			AND `t_source_picture`.scid=#{scid}
+		</if>
+		<if test="name != null and name != ''">
+			AND `t_source_picture`.name=#{name}
+		</if>
+		<if test="catagoryname != null and catagoryname != ''">
+			AND `t_source_sourcecatagory`.name=#{catagoryname}
+		</if>
+    </select>
+    
+      <!-- 获取视频列表 -->
+    <resultMap id="getVideoDatabaseMap" type="yinao.qualityLife.model.domain.SourceVideo">
+		<id column="vid" property="vid"/>
+		<result column="scid" property="scid"/>
+		<result column="catagoryname" property="catagoryname"/>
+		<result column="name" property="name"/>
+		<result column="path" property="path"/>
+		<result column="size" property="size"/>
+		<result column="duration" property="duration"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getVideoList" resultMap="getVideoDatabaseMap">
+    	SELECT
+    		`t_source_video`.vid,
+			`t_source_video`.scid,
+			`t_source_sourcecatagory`.name as catagoryname,
+			`t_source_video`.path,
+			`t_source_video`.name,
+			`t_source_video`.size,
+			`t_source_video`.duration,
+			`t_source_video`.sort,
+			`t_source_video`.create_time,
+			`t_source_video`.update_time,
+			`t_source_video`.create_at,
+			`t_source_video`.update_at
+		FROM 
+			`t_source_sourcecatagory`,
+			`t_source_video`
+		WHERE
+			`t_source_video`.scid=`t_source_sourcecatagory`.scid
+			 and `t_source_sourcecatagory`.state=1
+			 and `t_source_video`.state=1
+		<if test="scid != null and scid != ''">
+			AND `t_source_video`.scid=#{scid}
+		</if>
+		<if test="name != null and name != ''">
+			AND `t_source_video`.name=#{name}
+		</if>
+		<if test="catagoryname != null and catagoryname != ''">
+			AND `t_source_sourcecatagory`.name=#{catagoryname}
+		</if>
+		ORDER BY `t_source_video`.sort desc,`t_source_video`.update_time desc
+		LIMIT #{offset},#{pageSize}	
+    </select>
+       <!-- 获取视频总数 -->
+    <resultMap id="getVideoCount" type="yinao.qualityLife.model.domain.CourseCatagoryCount">
+		<id column="count" property="count"/>
+	</resultMap>
+    <select id="getVideoCount" resultMap="getVideoCount">
+    	SELECT
+    		count(*) as count
+		FROM 
+			`t_source_sourcecatagory`,
+			`t_source_video`
+		WHERE
+			`t_source_video`.scid=`t_source_sourcecatagory`.scid
+			 and `t_source_sourcecatagory`.state=1
+			 and `t_source_video`.state=1
+		<if test="scid != null and scid != ''">
+			AND `t_source_video`.scid=#{scid}
+		</if>
+		<if test="name != null and name != ''">
+			AND `t_source_video`.name=#{name}
+		</if>
+		<if test="catagoryname != null and catagoryname != ''">
+			AND `t_source_sourcecatagory`.name=#{catagoryname}
+		</if>	
+    </select>
+    <!-- 家政人员点赞 -->
+    <insert id="getLike"   >
+	    	INSERT INTO
+	        	`t_base_like`
+	        	(hkid,username,usertype,liketime,create_time,update_time)
+	        	VALUES
+	        	(#{hkid}, #{username},#{usertype},now(),now() , now())
+	</insert>
+	<!-- 取消对家政人员的点赞 -->
+	<delete id="deleteLike">
+			DELETE FROM  `t_base_like` 
+			WHERE
+				hkid=#{hkid}
+			and username=#{username}
+			and usertype=#{usertype}
+	</delete>
+	
+	  <!-- 获取某个家政人员的点赞数 -->
+    <resultMap id="getLikeCount" type="yinao.qualityLife.model.domain.Like">
+		<id column="likeCount" property="likeCount"/>
+	</resultMap>
+    <select id="getLikeCount" resultMap="getLikeCount">
+    	SELECT
+    		Count(*) as likeCount
+		FROM 
+			`t_base_like`
+		WHERE
+			hkid=#{hkid}
+		and usertype=#{usertype}
+		and username=#{username}
+    </select>
+    <!-- 修改banner状态 -->
+    <update id="changeBannerState" >
+ 		update `banner` 
+ 		<set>
+ 			state=#{state},
+ 			update_at=#{update_at},
+ 			update_time=now()
+ 		</set>
+ 			where bannerid=#{bannerId}
+	</update>
+	<!-- 获取当前最新图片 -->
+    <resultMap id="getSorts" type="yinao.qualityLife.model.domain.SourcePicture">
+		<id column="pid" property="pid"/>
+		<result column="scid" property="scid"/>
+		<result column="catagoryname" property="catagoryname"/>
+		<result column="name" property="name"/>
+		<result column="path" property="path"/>
+		<result column="size" property="size"/>
+		<result column="width" property="width"/>
+		<result column="height" property="height"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getSorts" resultMap="getSorts">
+    	SELECT
+    		`t_source_picture`.pid,
+			`t_source_picture`.scid,
+			`t_source_picture`.path,
+			`t_source_picture`.name,
+			`t_source_picture`.size,
+			`t_source_picture`.width,
+			`t_source_picture`.height,
+			`t_source_picture`.sort,
+			`t_source_picture`.create_time,
+			`t_source_picture`.update_time,
+			`t_source_picture`.create_at,
+			`t_source_picture`.update_at
+		FROM 
+			`t_source_picture`
+		WHERE
+		 `t_source_picture`.state=1
+		
+		ORDER BY `t_source_picture`.sort desc
+		LIMIT 0,1
+    </select>
+     <!-- 获取当前最新视频 -->
+    <resultMap id="getVideoSorts" type="yinao.qualityLife.model.domain.SourceVideo">
+		<id column="vid" property="vid"/>
+		<result column="scid" property="scid"/>
+		<result column="catagoryname" property="catagoryname"/>
+		<result column="name" property="name"/>
+		<result column="path" property="path"/>
+		<result column="size" property="size"/>
+		<result column="duration" property="duration"/>
+		<result column="sort" property="sort"/>		
+		<result column="create_at" property="create_at"/>
+		<result column="update_at" property="update_at"/>
+		<result column="create_time" property="create_time"/>
+		<result column="update_time" property="update_time"/> 
+	</resultMap>
+    <select id="getVideoSorts" resultMap="getVideoSorts">
+    	SELECT
+    		`t_source_video`.vid,
+			`t_source_video`.scid,
+			`t_source_video`.path,
+			`t_source_video`.name,
+			`t_source_video`.size,
+			`t_source_video`.duration,
+			`t_source_video`.sort,
+			`t_source_video`.create_time,
+			`t_source_video`.update_time,
+			`t_source_video`.create_at,
+			`t_source_video`.update_at
+		FROM 
+			`t_source_video`
+		WHERE
+			`t_source_video`.state=1
+		ORDER BY `t_source_video`.sort desc
+		LIMIT 0,1
+    </select>
+</mapper>

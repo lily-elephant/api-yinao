@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yinao.qualityLife.dao.InterviewMapper">
+
+    <resultMap id="getUserFromDatabaseMap" type="yinao.qualityLife.model.domain.Interview">
+        <id column="interviewid" property="interviewid"/>
+        <result column="emid" property="emid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="interviewtime" property="interviewtime"/>
+        <result column="place" property="place"/>
+        <result column="manager" property="manager"/>
+        <result column="result" property="result"/>
+        <result column="reamrk" property="remark"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+    </resultMap>
+    
+    <resultMap id="getInterviewListData" type="yinao.qualityLife.model.domain.InterviewList">
+        <id column="interviewid" property="interviewid"/>
+        <result column="emid" property="emid"/>
+        <result column="hkid" property="hkid"/>
+        <result column="interviewtime" property="interviewtime"/>
+        <result column="place" property="place"/>
+        <result column="manager" property="manager"/>
+        <result column="result" property="result"/>
+        <result column="remark" property="remark"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="create_time"/>
+        <result column="update_time" property="update_time"/>
+        <result column="emname" property="emname"/>
+        <result column="emphone" property="emphone"/>
+        <result column="hkname" property="hkname"/>
+        <result column="hkphone" property="hkphone"/>
+        <result column="headimageurl" property="headimageurl"/>
+        <result column="emheadimageurl" property="emheadimageurl"/>
+        <result column="idcard" property="idcard"/>
+        <result column="salary" property="salary"/>
+        <result column="hkidcard" property="hkidcard"/>
+    </resultMap>
+    
+    <select id="interviewlist" resultMap="getInterviewListData">
+    	SELECT 
+    		`t_order_interview`.interviewid,
+    		`t_order_interview`.emid,
+    		`t_order_interview`.hkid,
+    		`t_order_interview`.interviewtime,
+    		`t_order_interview`.place,
+    		`t_order_interview`.manager,
+    		`t_order_interview`.result,
+    		`t_order_interview`.remark,
+    		`t_order_interview`.state,
+    		`t_order_interview`.create_time,
+    		`t_order_interview`.update_time,
+    		`t_base_employer`.name as emname,
+    		`t_base_employer`.username as emphone,
+    		`t_base_employer`.headimageurl as emheadimageurl,
+    		`t_base_housekeeper`.name as hkname,
+    		`t_base_housekeeper`.username as hkphone,
+    		`t_base_housekeeper`.headimageurl, 
+    		`t_base_employer`.idcard,
+    		t_base_housekeeper.idcard as hkidcard,
+    		`t_base_housekeeper`.salary 
+    	FROM 
+    		t_order_interview ,
+    		t_base_employer ,
+    		t_base_housekeeper
+         WHERE
+		 	t_order_interview.emid=t_base_employer.emid
+		 	and t_order_interview.hkid=t_base_housekeeper.hkid
+        	<if test="emphone != null and emphone != ''">
+        		and `t_base_employer`.username like CONCAT('%',#{emphone},'%')
+        	</if>
+        	<if test="emname != null and emname != ''">
+        		and `t_base_employer`.name like CONCAT('%',#{emname},'%')
+        	</if>
+        	<if test="hkphone != null and hkphone != ''">
+        		and `t_base_housekeeper`.username like CONCAT('%',#{hkphone},'%')
+        	</if>
+        	<if test="hkname != null and hkname != ''">
+        		and `t_base_housekeeper`.name like CONCAT('%',#{hkname},'%')
+        	</if>
+        	ORDER BY
+  			interviewtime desc 
+        
+		 	
+    </select>
+    
+    <select id="detailsinterview" resultMap="getInterviewListData">
+    	SELECT 
+    		`t_order_interview`.interviewid,
+    		`t_order_interview`.emid,
+    		`t_order_interview`.hkid,
+    		`t_order_interview`.interviewtime,
+    		`t_order_interview`.place,
+    		`t_order_interview`.manager,
+    		`t_order_interview`.result,
+    		`t_order_interview`.remark,
+    		`t_order_interview`.state,
+    		`t_order_interview`.create_time,
+    		`t_order_interview`.update_time,
+    		`t_base_employer`.name as emname,
+    		`t_base_employer`.username as emphone,
+    		`t_base_housekeeper`.name as hkname,
+    		`t_base_housekeeper`.username as hkphone,
+    		`t_base_housekeeper`.headimageurl, 
+    		`t_base_employer`.idcard,
+    		t_base_housekeeper.idcard as hkidcard,
+    		`t_base_housekeeper`.salary 
+    	FROM 
+    		t_order_interview ,
+    		t_base_employer ,
+    		t_base_housekeeper
+         WHERE
+		 	t_order_interview.emid=t_base_employer.emid
+		 	and t_order_interview.hkid=t_base_housekeeper.hkid
+        	and t_order_interview.interviewid=#{interviewid}
+        	
+    </select>
+
+    <update id="editinterview" >
+        update t_order_interview
+        <set>
+            emid=#{emid},
+            hkid=#{hkid},
+            interviewtime=#{interviewtime},
+            place=#{place},
+            manager=#{manager},
+            result=#{result},
+            remark=#{remark},
+            update_time=now()
+        </set>
+        where interviewid=#{interviewid}
+    </update>
+    
+    <update id="cancelInterview" >
+        update t_order_interview
+        <set>
+            result="雇主放弃",
+            update_time=now()
+        </set>
+        where interviewid=#{interviewid}
+        and emid=#{emid}
+    </update>
+    
+    <update id="cancelInterviewTwo" >
+        update t_order_interview
+        <set>
+            result="家政人员放弃",
+            update_time=now()
+        </set>
+        where interviewid=#{interviewid}
+        and hkid=#{hkid}
+    </update>
+    
+    
+    <update id="admincancelInterview" >
+        update t_order_interview
+        <set>
+            result=#{result},
+            update_time=now()
+        </set>
+        where interviewid=#{interviewid}
+    </update>
+    
+    <update id="sureInterview" >
+       update t_order_interview
+        <set>
+            result="合同生成中",
+            update_time=now()
+        </set>
+        where interviewid=#{interviewid}
+        and emid=#{emid}
+    </update>
+    
+    <update id="changeInterviewState" >
+       update t_order_interview
+        <set>
+            result="已签约",
+            update_time=now()
+        </set>
+        where interviewid=#{interviewid}
+    </update>
+
+    <update id="deleteinterview" >
+        update t_order_interview
+        <set>
+            state="0",update_time=now()
+        </set>
+        where interviewid=#{interviewid}
+    </update>
+
+    <insert id="addinterview"   >
+        INSERT INTO
+        `t_order_interview`
+        (emid,hkid,interviewtime,place,manager,result,remark, create_time , state)
+        VALUES
+        (#{emid},#{hkid},#{interviewtime},#{place},#{manager},#{result},#{remark},now() , "1" )
+    </insert>
+</mapper>
