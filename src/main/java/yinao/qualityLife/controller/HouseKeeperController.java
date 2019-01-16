@@ -23,6 +23,7 @@ import yinao.qualityLife.model.domain.HouseKeeper;
 import yinao.qualityLife.model.domain.HousekeeperCertificate;
 import yinao.qualityLife.model.domain.LikeBean;
 import yinao.qualityLife.model.domain.User;
+import yinao.qualityLife.model.vo.DataCount;
 import yinao.qualityLife.utils.PageUtils;
 import yinao.qualityLife.utils.TokenUtils;
 
@@ -75,18 +76,24 @@ public class HouseKeeperController {
 			return new ResultMap().success().message("没有更多数据");
 		}
     }
-	
+	// 后台家政人员列表，可根据不同参数过滤
 	@RequestMapping(value = "admin/housekeeper/housekeeperlist",method = RequestMethod.GET)
     public ResultMap adminhouseKeeperList(HttpServletRequest request){
-		//String username_token = "" ; 
-		//String token = request.getHeader(tokenHeader) ;
-		//if(token != null ) {
-		//	username_token = tokenUtils.getUsernameFromToken(token) ; 
-		//}
 		String username = request.getParameter("username");
 		String name = request.getParameter("name");
 		String state = request.getParameter("state");
 		String servicestate = request.getParameter("servicestate");
+		String age = request.getParameter("age");
+		String sage =null;
+		String eage =null;
+		if(age!=null &&age!="") {
+			String[] temp=age.split("-");
+			sage =temp[0];
+			eage =temp[1];
+		}
+
+		String nativeplace = request.getParameter("nativeplace");
+		String education = request.getParameter("education");
 		if(request.getParameter("currPage") == null) {
 			return new ResultMap().fail("401").message("缺少参数currPage");
 		}
@@ -95,22 +102,12 @@ public class HouseKeeperController {
 		}
 		int currPage = Integer.parseInt(request.getParameter("currPage"));
 		int pageSize = Integer.parseInt(request.getParameter("pageSize"));
-		List<HouseKeeper> housekeeperlist = this.housekeeperMapper.adminhouseKeeperList(username,name,state,servicestate);
-//		for(int i= 0 ; i< housekeeperlist.size() ; i++ ) {
-//			housekeeperlist.get(i).setIsLike("0");
-//			List<LikeBean> list = this.housekeeperMapper.houseKeeperLikeCount(housekeeperlist.get(i).getHkid()) ;
-//			//System.out.println(list.toString() );
-//			int count = list.size() ;
-//			housekeeperlist.get(i).setLikeCount(count + "");
-//			for(int j= 0 ; j< list.size() ; j++ ) {
-//				if(username_token.equals(list.get(j).getUsername())){
-//					housekeeperlist.get(i).setIsLike("1");
-//				}
-//			}
-//		}
-		List<HouseKeeper> list  = PageUtils.getList(housekeeperlist , currPage , pageSize ) ; 
+		// 获得记录总数
+		DataCount dataCount=this.housekeeperMapper.dataCount(username,name,state,servicestate,sage,eage,nativeplace,education);
+		List<HouseKeeper> list = this.housekeeperMapper.adminhouseKeeperList(currPage, pageSize,username,name,state,servicestate,sage,eage,nativeplace,education);
+//		List<HouseKeeper> list  = PageUtils.getList(housekeeperlist , currPage , pageSize ); 
 		if(list != null) {
-			return new ResultMap().success().message("success").count(housekeeperlist.size()).data(list );		
+			return new ResultMap().success().message("success").count(dataCount.getRecordcount()).data(list );
 		}else {
 			return new ResultMap().success().message("没有更多数据");
 		}
@@ -123,6 +120,7 @@ public class HouseKeeperController {
 		String username = request.getParameter("username");
 		String name = request.getParameter("name");
 		String headimageurl = request.getParameter("headimageurl");
+		String headvideourl = request.getParameter("headvideourl");
 		String idcard = request.getParameter("idcard"); 
 		String education = request.getParameter("education"); 
 		String address1 = request.getParameter("address1");
@@ -138,12 +136,15 @@ public class HouseKeeperController {
 		String describes = request.getParameter("describes");
 		String nativeplace = request.getParameter("nativeplace");
 		String servicestate = request.getParameter("servicestate");
-
+		// 后加两个字段
+		String nowsalary = request.getParameter("nowsalary");
+		String frompart = request.getParameter("frompart");
+		
 		if(!username_token.equals(username)) {
 			return new ResultMap().fail("401").message("没有权限修改他人信息");		
 		}
 		try {
-			int count = this.housekeeperMapper.updateEmployerInfo(servicestate,username,name,headimageurl, idcard,education,address1,address2,address3,sex,role_id,brief,salary,workdate,marry,isdrive , describes , nativeplace );
+			int count = this.housekeeperMapper.updateEmployerInfo(servicestate,username,name,headimageurl,headvideourl, idcard,education,address1,address2,address3,sex,role_id,brief,salary,workdate,marry,isdrive,describes, nativeplace,nowsalary,frompart);
 			if(count == 1 ) {
 				return new ResultMap().success().message("修改成功" );		
 			}else {
@@ -163,6 +164,7 @@ public class HouseKeeperController {
 		String username = request.getParameter("username");
 		String name = request.getParameter("name");
 		String headimageurl = request.getParameter("headimageurl");
+		String headvideourl = request.getParameter("headvideourl");
 		String idcard = request.getParameter("idcard"); 
 		String education = request.getParameter("education"); 
 		String address1 = request.getParameter("address1");
@@ -178,8 +180,11 @@ public class HouseKeeperController {
 		String describes = request.getParameter("describes");
 		String nativeplace = request.getParameter("nativeplace");
 		String servicestate = request.getParameter("servicestate");
+		// 后加两个字段
+		String nowsalary = request.getParameter("nowsalary");
+		String frompart = request.getParameter("frompart");
 		try {
-			int count = this.housekeeperMapper.updateEmployerInfo(servicestate,username,name,headimageurl, idcard,education,address1,address2,address3,sex,role_id,brief,salary,workdate,marry,isdrive , describes , nativeplace );
+			int count = this.housekeeperMapper.updateEmployerInfo(servicestate,username,name,headimageurl, headvideourl,idcard,education,address1,address2,address3,sex,role_id,brief,salary,workdate,marry,isdrive, describes,nativeplace,nowsalary,frompart);
 			if(count == 1 ) {
 				return new ResultMap().success().message("修改成功" );		
 			}else {

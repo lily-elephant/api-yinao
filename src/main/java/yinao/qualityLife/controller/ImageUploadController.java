@@ -37,6 +37,8 @@ public class ImageUploadController {
 		private String VIDEO_FOLDER;
 		@Value("${PICTURE_FOLDER}")
 		private String PICTURE_FOLDER;
+		@Value("${FILE_FOLDER}")
+		private String FILE_FOLDER;
 		
 		public ImageUploadController(sourceMapper sourceMapper,TokenUtils tokenUtils) {
 			this.sourceMapper = sourceMapper;
@@ -86,7 +88,23 @@ public class ImageUploadController {
 		            videos.setSize(file.getSize());
 		            videos.setPath("/videos"+path_params);
 		            return new ResultMap().success().message("文件写入成功...").data(videos);	
-				}else {
+				}else if(type.equals("file")) {
+					String path_params ="/f_"+ time + number + benben ;
+					Path path = Paths.get(FILE_FOLDER + path_params);
+					//如果没有files文件夹，则创建
+		            if (!Files.isWritable(path)) {
+		                Files.createDirectories(Paths.get(FILE_FOLDER));
+		            }
+		            UploadVideos files=new UploadVideos();
+		            //文件写入指定路径
+		            Files.write(path, bytes);
+		           
+		            files.setName(lds);
+		            files.setSize(file.getSize());
+		            files.setPath("/files"+path_params);
+		            return new ResultMap().success().message("文件写入成功...").data(files);	
+				}
+				else {
 					String path_params ="/p_"+ time + number + benben ;
 					Path path = Paths.get(PICTURE_FOLDER + path_params);
 					BufferedImage image = ImageIO.read(file.getInputStream());

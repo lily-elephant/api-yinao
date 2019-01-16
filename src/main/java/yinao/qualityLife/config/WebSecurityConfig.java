@@ -87,13 +87,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/getAuthData").permitAll()
                 .antMatchers("/admin/getPersonalityAnswer").permitAll()
                 .antMatchers("/admin/getPersonalityAnswerTwo").permitAll()
-                
-                
-                 
-                //.antMatchers("/uploadImage").permitAll()
-                
 
-                
+                // add by zihai
+                .antMatchers("/exam/baseExamCatagory").permitAll()
                 //  daodao add 
                 .antMatchers("/admin/userlist").permitAll()
                 .antMatchers("/admin/adduser").permitAll()

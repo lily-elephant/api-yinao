@@ -33,7 +33,57 @@
 		<result column="childcount" property="childcount"/>
 		<result column="describes" property="describes"/>
 	</resultMap>
- 	
+ 	<resultMap id="getUserSignFromDatabaseMap" type="yinao.qualityLife.model.domain.EmployerSign">
+		<id column="hkid" property="hkid"/>
+        <result column="username" property="username"/>
+        <result column="name" property="name"/>
+        <result column="headimageurl" property="headimageurl"/>
+        <result column="password" property="password"/>
+        <result column="idcard" property="idcard"/>
+        <result column="education" property="education"/>
+        <result column="address3" property="address3"/>
+        <result column="address2" property="address2"/>
+        <result column="address1" property="address1"/>
+        <result column="sex" property="sex"/> 
+        <result column="create_time" property="create_time"/>
+        <result column="role_id" property="role_id"/>
+        <result column="state" property="state"/> 
+        <result column="brief" property="brief"/> 
+        <result column="salary" property="salary"/> 
+        <result column="workdate" property="workdate"/> 
+        <result column="servicestate" property="servicestate"/>         
+        <result column="marry" property="marry"/>
+        <result column="isdrive" property="isdrive"/>
+        <result column="describes" property="describes"/>
+        <result column="nativeplace" property="nativeplace"/>
+        <result column="sign_job" property="sign_job"/>
+        <result column="sign_salary" property="sign_salary"/>
+	</resultMap>
+	<resultMap id="getUserViewCardFromDatabaseMap" type="yinao.qualityLife.model.domain.ViewCard">
+		<id column="viewid" property="viewid"/>
+        <result column="emid" property="emid"/>
+        <result column="ccid" property="ccid"/>
+        <result column="totalcount" property="totalcount"/>
+        <result column="remaincount" property="remaincount"/>
+        <result column="buytime" property="buytime"/>
+        <result column="wxno" property="wxno"/>
+	</resultMap>
+ 	<resultMap id="getUserViewCardPriceFromDatabaseMap" type="yinao.qualityLife.model.domain.ViewCardPrice">
+		<id column="primaryid" property="primaryid"/>
+        <result column="carprice" property="carprice"/>
+        <result column="ccid" property="ccid"/>
+        <result column="cardcount" property="cardcount"/>
+        <result column="cardname" property="cardname"/>
+	</resultMap>
+ 	<!-- 查询卡信息列表 -->
+    <select id="getViewCardPrice" resultMap="getUserViewCardPriceFromDatabaseMap">
+    	SELECT * FROM `t_base_employer_cardprice` 
+        <where>
+        	<if test="ccid != null and ccid != ''">
+        		ccid = #{ccid}
+        	</if>
+        </where>       
+    </select>
  	<!-- 雇主信息列表 -->
     <select id="getEmployerInfo" resultMap="getUserFromDatabaseMap">
     	SELECT * FROM `t_base_employer` 
@@ -48,6 +98,47 @@
         		and servicestate = #{servicestate}
         	</if>
         </where>       
+    </select>
+    <!-- 雇主信息 -->
+    <select id="getEmployerByUserName" resultMap="getUserFromDatabaseMap">
+    	SELECT * FROM `t_base_employer` 
+        <where>
+        	<if test="username != null and username != ''">
+        		and username =#{username}
+        	</if>
+        </where>       
+    </select>
+    <!-- 雇主查询卡信息 -->
+    <select id="getViewCard" resultMap="getUserViewCardFromDatabaseMap">
+    	SELECT *
+    	FROM `t_base_employer_viewcard` 
+        <where>
+        	<if test="emid != null and emid != ''">
+        		and emid =#{emid}
+        	</if>
+        	<if test="ccid != null and ccid != ''">
+        		and ccid =#{ccid}
+        	</if>
+        </where>       
+    </select>
+    
+    <!-- 雇主签约信息 -->
+    <select id="getSignList" resultMap="getUserSignFromDatabaseMap">
+    	SELECT t2.*,t1.job as sign_job,t1.salary as sign_salary,
+    	t1.applydate as sign_applydate,t1.startdate as sign_startdate,
+    	t1.enddate as sign_enddate,t1.servicefee as sign_servicefee,
+    	t1.downloadurl as sign_downloadurl,t1.description as sign_description,
+    	t1.signdate as sign_signdate,t1.createat as sign_createat,t1.signstate as sign_signstate
+    	FROM `t_base_employer_sign` t1 LEFT JOIN `t_base_housekeeper` t2 ON t1.hkid =t2.hkid
+        <where>
+        	<if test="emid != null and emid != ''">
+        		and t1.emid =#{emid}
+        	</if>
+        	<if test="hkid != null and emid != ''">
+        		and t1.hkid =#{hkid}
+        	</if>
+        </where>
+        ORDER BY t1.applydate desc  
     </select>
     
 	<!-- 编辑雇主信息 -->  
@@ -84,7 +175,64 @@
 	    </set>
   		where username=#{username}
 	</update>
+	<delete id="deleteEmployerStar" >
+  		delete from t_base_employer_housekeeper
+  		where emid=#{emid} and hkid=#{hkid}
+	</delete>
+	<insert id="insertEmployerStar" >
+  		INSERT INTO
+        	`t_base_employer_housekeeper`
+        	(emid, hkid)
+        	VALUES
+        	(#{emid},#{hkid})
+	</insert>
+	<insert id="insertSign" >
+  		INSERT INTO
+        	`t_base_employer_sign`
+        	(emid, hkid,applydate)
+        	VALUES
+        	(#{emid},#{hkid},CURDATE())
+	</insert>  
+	<insert id="insertContract" >
+  		INSERT INTO
+        	`t_base_employer_contact`
+        	(emid, hkid,phonetime)
+        	VALUES
+        	(#{emid},#{hkid},now())
+	</insert>
+	<insert id="addViewCard" >
+  		INSERT INTO
+        	`t_base_employer_viewcard`
+        	(emid, ccid,totalcount,remaincount,buytime)
+        	VALUES
+        	(#{emid},#{ccid},#{totalcount},#{remaincount},now())
+	</insert>
+	<update id="updateViewCard" >
+  		update
+        	`t_base_employer_viewcard`
+       	<set>
+	    	totalcount = totalcount + #{totalcount}
+	    </set>
+        	where
+        	emid =#{emid} and ccid=#{ccid}
+	</update>  
+	<update id="updateRemainCount" >
+  		update
+        	`t_base_employer_viewcard`
+       	<set>
+	    	remaincount = remaincount - 1
+	    </set>
+        	where
+        	emid =#{emid} and ccid=#{ccid}
+	</update>  
 	
-
-    
+	<update id="updateContract" >
+  		update
+        	`t_base_employer_contact`
+       	<set>
+	    	phonetime=now()
+	    </set>
+        	where
+        	emid =#{emid} and hkid=#{hkid}
+	</update>  
 </mapper>

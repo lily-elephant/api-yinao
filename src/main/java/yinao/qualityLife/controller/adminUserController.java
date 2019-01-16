@@ -10,9 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.jayway.jsonpath.internal.filter.ValueNode.UndefinedNode;
-
 import yinao.qualityLife.dao.adminUserMapper;
 import yinao.qualityLife.model.ResultMap;
 import yinao.qualityLife.model.TokenDetail;

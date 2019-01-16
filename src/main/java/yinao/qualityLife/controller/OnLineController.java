@@ -15,7 +15,7 @@ public class OnLineController {
 		// TODO Auto-generated constructor stub
 	}
 		//返回上线状态
-		@RequestMapping(value="/version104",method=RequestMethod.POST)
+		@RequestMapping(value="/version110",method=RequestMethod.POST)
 		public ResultMap onlineState(HttpServletRequest request) {			
 			VersionInfo entity = new VersionInfo() ;
 			entity.setOnline(true);
@@ -23,12 +23,12 @@ public class OnLineController {
 			
 		}
 		//返回上线状态
-				@RequestMapping(value="/version105",method=RequestMethod.POST)
-				public ResultMap onlineStateben(HttpServletRequest request) {			
-					VersionInfo entity = new VersionInfo() ;
-					entity.setOnline(true);
-					return new ResultMap().success().message("success").data(entity);
-					
-				}
+		@RequestMapping(value="/version109",method=RequestMethod.POST)
+		public ResultMap onlineStateben(HttpServletRequest request) {			
+			VersionInfo entity = new VersionInfo() ;
+			entity.setOnline(true);
+			return new ResultMap().success().message("success").data(entity);
+			
+		}
 }
  

@@ -8,6 +8,7 @@ public class OfflineTrainingNotes {
 	private String transactionid ;
 	private String businesstype ; 
 	private String create_time ;
+	private String money ;
 	private String ot_name ;
 	private String des ; 
 	private String address ; 
@@ -21,6 +22,13 @@ public class OfflineTrainingNotes {
 
 	public void setIsnotice(String isnotice) {
 		this.isnotice = isnotice;
+	}
+	public String getMoney() {
+		return money;
+	}
+
+	public void setMoney(String money) {
+		this.money = money;
 	}
 
 	public OfflineTrainingNotes() {}

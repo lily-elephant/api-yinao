@@ -539,7 +539,7 @@
 		WHERE
 		 	t_test_exam.ccid=#{ccid}
     </select>
-    	<!-- 课程模块下拉框 -->
+   	<!-- 课程模块下拉框 -->
 	<resultMap id="selectCourseCatagory" type="yinao.qualityLife.model.domain.CourseCatagory">
 		<id column="ccid" property="ccid"/>
 		<result column="name" property="name"/>
@@ -554,6 +554,18 @@
 		 WHERE
 		 	t_test_coursecatagory.state=1
 		 	and t_test_coursecatagory.ccid &gt;0
+		 ORDER BY `t_test_coursecatagory`.ccid desc
+    </select>
+    <select id="testselectCourseCatagory" resultMap="selectCourseCatagory">
+    	SELECT
+			`t_test_coursecatagory`.ccid,
+			`t_test_coursecatagory`.name,
+			`t_test_coursecatagory`.ismust	
+		FROM 
+			`t_test_coursecatagory`
+		 WHERE
+		 	t_test_coursecatagory.state=1
+		 	ORDER BY `t_test_coursecatagory`.ccid desc
     </select>
     <!-- 搜索课程模块列表 -->
 	<resultMap id="serachCourseCatagoryList" type="yinao.qualityLife.model.domain.CourseCatagory">
@@ -663,7 +675,7 @@
 		 		AND t_test_course.name like CONCAT('%',#{name},'%')
 		 	</if>
 		ORDER BY 
-			`t_test_course`.cid desc,`t_test_course`.update_time desc
+			`t_test_coursecatagory`.ccid desc,`t_test_course`.cid desc,`t_test_course`.update_time desc
 		LIMIT #{offset},#{pageSize}	
     </select>
     <!-- 获取课程列表纪录条数 -->
@@ -869,6 +881,7 @@
 			`t_base_housekeeper`.address2,
 			`t_base_housekeeper`.address3,
 			`t_base_housekeeper`.headimageurl,
+			`t_base_housekeeper`.headvideourl,
 			`t_base_housekeeper`.brief,
 			`t_base_housekeeper`.workdate,
 			`t_base_housekeeper`.salary
@@ -941,6 +954,7 @@
 			`t_base_housekeeper`.address2,
 			`t_base_housekeeper`.address3,
 			`t_base_housekeeper`.headimageurl,
+			`t_base_housekeeper`.headvideourl,
 			`t_base_housekeeper`.brief,
 			`t_base_housekeeper`.workdate,
 			`t_base_housekeeper`.salary

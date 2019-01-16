@@ -6,7 +6,9 @@
         <id column="hkid" property="hkid"/>
         <result column="username" property="username"/>
         <result column="name" property="name"/>
+        <result column="phonetime" property="phonetime"/>
         <result column="headimageurl" property="headimageurl"/>
+        <result column="headvideourl" property="headvideourl"/>
         <result column="password" property="password"/>
         <result column="idcard" property="idcard"/>
         <result column="education" property="education"/>
@@ -25,13 +27,26 @@
         <result column="isdrive" property="isdrive"/>
         <result column="describes" property="describes"/>
         <result column="nativeplace" property="nativeplace"/>
+        <result column="nowsalary" property="nowsalary"/>
+        <result column="frompart" property="frompart"/>
     </resultMap>
-    
+    <resultMap id="getEmployerHouseKeeperMap" type="yinao.qualityLife.model.domain.EmployerHouseKeeper">
+        <id column="primaryid" property="primaryid"/>
+        <result column="emid" property="emid"/>
+        <result column="emname" property="emname"/>
+        <result column="emphone" property="emphone"/>
+        <result column="hkname" property="hkname"/>
+        <result column="hkphone" property="hkphone"/>
+        <result column="hkid" property="hkid"/>
+    </resultMap>
     
     <resultMap id="getCount" type="yinao.qualityLife.model.domain.LikeBean">
         <id column="lid" property="lid"/>
         <result column="username" property="username"/>
         <result column="usertype" property="usertype"/>
+    </resultMap>
+    <resultMap id="getRecordCount" type="yinao.qualityLife.model.vo.DataCount">
+        <id column="recordcount" property="recordcount"/>
     </resultMap>
     
     <resultMap id="getComment" type="yinao.qualityLife.model.domain.EmployerComment">
@@ -104,21 +119,35 @@
     <select id="adminhouseKeeperList" resultMap="getUserFromDatabaseMap">
     	SELECT * FROM `t_base_housekeeper` 
         <where>
+        	1=1
         	<if test="username != null and username != ''">
         		and username like CONCAT('%',#{username},'%')
         	</if>
         	<if test="name != null and name != ''">
-        		and name =like CONCAT('%',#{name},'%')
+        		and name like CONCAT('%',#{name},'%')
         	</if>
         	<if test="state != null and state != ''">
-        		and state = #{state}
+        		and state =#{state}
         	</if>
         	<if test="servicestate != null and servicestate != ''">
-        		and servicestate = #{servicestate}
+        		and servicestate =#{servicestate}
+        	</if>
+        	<if test="sage != null and sage != ''">
+        		and (year(now())-substring(idcard,7,4))<![CDATA[ >= ]]>#{sage}
+        	</if>
+        	<if test="eage != null and eage != ''">
+        		and (year(now())-substring(idcard,7,4))<![CDATA[ <= ]]>#{eage}
+        	</if>
+        	<if test="nativeplace != null and nativeplace != ''">
+        		and nativeplace like CONCAT('%',#{nativeplace},'%')
+        	</if>
+        	<if test="education != null and education != ''">
+        		and education like CONCAT('%',#{education},'%')
         	</if>
         </where>
         ORDER BY
   			create_time desc 
+		LIMIT ${(currpage-1)*pagesize},${currpage*pagesize}; 
     </select>
     
     <select id="houseKeeperList" resultMap="getUserFromDatabaseMap">
@@ -138,18 +167,181 @@
         ORDER BY
   			create_time desc 
     </select>
-    
+    <select id="houseKeeperStarList" resultMap="getUserFromDatabaseMap">
+    	SELECT t2.* FROM `t_base_employer_housekeeper` t1 LEFT JOIN `t_base_housekeeper` t2 ON t1.hkid=t2.hkid
+        <where>
+        	t2.state != "0"
+        	<if test="emid != null and emid != ''">
+        		and t1.emid =#{emid}
+        	</if>
+        	<if test="hkid != null and hkid != ''">
+        		and t1.hkid =#{hkid}
+        	</if>
+        </where>
+        ORDER BY
+  			t1.primaryid desc 
+    </select>
+    <select id="houseKeeperContractList" resultMap="getUserFromDatabaseMap">
+    	SELECT t1.phonetime ,t2.* FROM `t_base_employer_contact` t1 LEFT JOIN `t_base_housekeeper` t2 ON t1.hkid=t2.hkid
+        <where>
+        	t2.state != "0"
+        	<if test="emid != null and emid != ''">
+        		and t1.emid =#{emid}
+        	</if>
+        	<if test="hkid != null and hkid != ''">
+        		and t1.hkid =#{hkid}
+        	</if>
+        </where>
+        ORDER BY
+  			t1.primaryid desc
+  			<if test="currpage != -1 and pagesize != -1">
+        		LIMIT ${(currpage-1)*pagesize},${currpage*pagesize}; 
+        	</if>	
+    </select>
+    <select id="emhouseKeeperContractList" resultMap="getEmployerHouseKeeperMap" >
+    	SELECT 
+    		t1.primaryid,t1.phonetime ,t2.hkid,t2.username as hkphone,t2.name as hkname,
+    		t3.username as emphone,t3.name as emname,t3.emid
+    	FROM `t_base_employer_contact` t1 
+    	LEFT JOIN 
+    		`t_base_housekeeper` t2 ON t1.hkid=t2.hkid
+   		LEFT JOIN 
+    		`t_base_employer` t3 ON t1.emid=t3.emid
+        <where>
+        	t2.state != "0"
+        	<if test="emname != null and emname != ''">
+        		and t3.name like CONCAT('%',#{emname},'%')
+        	</if>
+        	<if test="hkname != null and hkname != ''">
+        		and t2.name like CONCAT('%',#{hkname},'%')
+        	</if>
+        	<if test="emphone != null and emphone != ''">
+        		and t3.username like CONCAT('%',#{emphone},'%')
+        	</if>
+        	<if test="hkphone != null and hkphone != ''">
+        		and t2.username like CONCAT('%',#{hkphone},'%')
+        	</if>
+        </where>
+        ORDER BY
+  			t1.primaryid desc
+		<if test="pageindex != -1 and pagecount != -1">
+       		LIMIT ${(pageindex-1)*pagecount},${pageindex*pagecount}; 
+       	</if>	
+    </select>
+    <select id="emhouseKeeperSignList" resultMap="getEmployerHouseKeeperMap" >
+    	SELECT 
+    		t1.primaryid,t2.hkid,t2.username as hkphone,t2.name as hkname,
+    		t3.username as emphone,t3.name as emname,t3.emid,
+    		t1.job as sign_job,t1.salary as sign_salary,
+	    	t1.applydate as sign_applydate,t1.startdate as sign_startdate,
+	    	t1.enddate as sign_enddate,t1.servicefee as sign_servicefee,
+	    	t1.downloadurl as sign_downloadurl,t1.description as sign_description,
+	    	t1.signdate as sign_signdate,t1.createat as sign_createat,t1.signstate as sign_signstate
+    	FROM `t_base_employer_sign` t1 
+    	LEFT JOIN 
+    		`t_base_housekeeper` t2 ON t1.hkid=t2.hkid
+   		LEFT JOIN 
+    		`t_base_employer` t3 ON t1.emid=t3.emid
+        <where>
+        	t2.state != "0"
+        	<if test="emname != null and emname != ''">
+        		and t3.name like CONCAT('%',#{emname},'%')
+        	</if>
+        	<if test="hkname != null and hkname != ''">
+        		and t2.name like CONCAT('%',#{hkname},'%')
+        	</if>
+        	<if test="emphone != null and emphone != ''">
+        		and t3.username like CONCAT('%',#{emphone},'%')
+        	</if>
+        	<if test="hkphone != null and hkphone != ''">
+        		and t2.username like CONCAT('%',#{hkphone},'%')
+        	</if>
+        </where>
+        ORDER BY
+  			t1.primaryid desc
+		<if test="pageindex != -1 and pagecount != -1">
+       		LIMIT ${(pageindex-1)*pagecount},${pageindex*pagecount}; 
+       	</if>	
+    </select>
+    <select id="emhouseKeeperSignDetail" resultMap="getEmployerHouseKeeperMap" >
+    	SELECT 
+    		t1.primaryid,t2.hkid,t2.username as hkphone,t2.name as hkname,
+    		t3.username as emphone,t3.name as emname,t3.emid,
+    		t1.job as sign_job,t1.salary as sign_salary,
+	    	t1.applydate as sign_applydate,t1.startdate as sign_startdate,
+	    	t1.enddate as sign_enddate,t1.servicefee as sign_servicefee,
+	    	t1.downloadurl as sign_downloadurl,t1.description as sign_description,
+	    	t1.signdate as sign_signdate,t1.createat as sign_createat,t1.signstate as sign_signstate
+    	FROM `t_base_employer_sign` t1 
+    	LEFT JOIN 
+    		`t_base_housekeeper` t2 ON t1.hkid=t2.hkid
+   		LEFT JOIN 
+    		`t_base_employer` t3 ON t1.emid=t3.emid
+        <where>
+        	t2.state != "0"
+        	<if test="primaryid != null and primaryid != ''">
+        		and t1.primaryid =#{primaryid}
+        	</if>
+       	</where>
+    </select>
     <select id="houseKeeperLikeCount" resultMap="getCount">
     	SELECT lid , username , usertype FROM `t_base_like` 
         where hkid=#{hkid}
     </select>
+    <select id="dataCount" resultMap="getRecordCount">
+    	SELECT count(hkid) as recordcount FROM `t_base_housekeeper` 
+    	<where>
+        	1=1
+        	<if test="username != null and username != ''">
+        		and username like CONCAT('%',#{username},'%')
+        	</if>
+        	<if test="name != null and name != ''">
+        		and name like CONCAT('%',#{name},'%')
+        	</if>
+        	<if test="state != null and state != ''">
+        		and state =#{state}
+        	</if>
+        	<if test="servicestate != null and servicestate != ''">
+        		and servicestate =#{servicestate}
+        	</if>
+        	<if test="sage != null and sage != ''">
+        		and (year(now())-substring(idcard,7,4))<![CDATA[ >= ]]>#{sage}
+        	</if>
+        	<if test="eage != null and eage != ''">
+        		and (year(now())-substring(idcard,7,4))<![CDATA[ <= ]]>#{eage}
+        	</if>
+        	<if test="nativeplace != null and nativeplace != ''">
+        		and nativeplace like CONCAT('%',#{nativeplace},'%')
+        	</if>
+        	<if test="education != null and education != ''">
+        		and education like CONCAT('%',#{education},'%')
+        	</if>
+        </where>
+    </select>
     
+    <update id="updateemhouseKeeperSignDetail" parameterType="yinao.qualityLife.model.domain.EmployerHouseKeeper">
+  		update t_base_employer_sign
+	    <set>
+	    	<if test="sign_job != null and sign_job != ''">job=#{sign_job},</if> 
+			<if test="sign_salary != null and sign_salary != ''">salary=#{sign_salary},</if> 
+			<if test="sign_startdate != null and sign_startdate != ''">startdate=#{sign_startdate},</if>
+			<if test="sign_enddate != null and sign_enddate != ''">enddate=#{sign_enddate},</if>
+			<if test="sign_servicefee != null and sign_servicefee != ''">servicefee=#{sign_servicefee},</if>
+			<if test="sign_downloadurl != null and sign_downloadurl != ''">downloadurl=#{sign_downloadurl},</if>
+			<if test="sign_description != null and sign_description != ''">description=#{sign_description},</if>
+			<if test="sign_applydate != null and sign_applydate != ''">applydate=#{sign_applydate},</if>
+			<if test="sign_signdate != null and sign_signdate != ''">signdate=#{sign_signdate},</if>
+			<if test="sign_createat != null and sign_createat != ''">createat=#{sign_createat},</if>
+	    </set>
+  		where primaryid=#{primaryid}
+	</update>
     <update id="updateEmployerInfo" >
   		update t_base_housekeeper
 	    <set>
 	    	<if test="servicestate != null and servicestate != ''">servicestate=#{servicestate},</if> 
 			<if test="name != null and name != ''">name=#{name},</if> 
 			<if test="headimageurl != null and headimageurl != ''">headimageurl=#{headimageurl},</if>
+			<if test="headvideourl != null and headvideourl != ''">headvideourl=#{headvideourl},</if>
 			<if test="idcard != null and idcard != ''">idcard=#{idcard},</if>
 			<if test="education != null and education != ''">education=#{education},</if>
 			<if test="address1 != null and address1 != ''">address1=#{address1},</if>
@@ -166,6 +358,8 @@
 			<if test="isdrive != null and isdrive != ''">isdrive=#{isdrive},</if>
 			<if test="describes != null and describes != ''">describes=#{describes},</if>
 			<if test="nativeplace != null and nativeplace != ''">nativeplace=#{nativeplace},</if>
+			<if test="nowsalary != null and nowsalary != ''">nowsalary=#{nowsalary},</if>
+			<if test="frompart != null and frompart != ''">frompart=#{frompart}</if>
 	    </set>
   		where username=#{username}
 	</update>
@@ -194,9 +388,9 @@
       	
     	INSERT INTO
         	`t_base_housekeeper`
-        	(username,name,headimageurl,idcard,education,address1,address2,address3,sex,role_id,state , create_time , salary , password ,servicestate , marry , isdrive , describes , nativeplace )  
+        	(username,name,headimageurl,headvideourl,idcard,education,address1,address2,address3,sex,role_id,state , create_time , salary , password ,servicestate , marry , isdrive , describes , nativeplace,nowsalary,frompart )  
         	VALUES
-        	(#{username},#{name},#{headimageurl},#{idcard},#{education},#{address1},#{address2},#{address3},#{sex},'1' , '0',  now() , #{salary} ,#{password},'0',#{marry},#{isdrive},#{describes},#{nativeplace})
+        	(#{username},#{name},#{headimageurl},#{headvideourl},#{idcard},#{education},#{address1},#{address2},#{address3},#{sex},'1' , '0',  now() , #{salary} ,#{password},'0',#{marry},#{isdrive},#{describes},#{nativeplace},#{nowsalary},#{frompart})
    </insert>
    
    

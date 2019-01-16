@@ -101,7 +101,13 @@ public interface UserMapper {
     //获取已有评论
     List<Comment> getCommentList(@Param("emid") String emid , @Param("hkid") String hkid) ;
     //获取家政人员学习订单列表
-    List<StudyOrder> getHKOrderList(@Param("hkid") String hkid , @Param("isbuy") String isbuy) ;
+    List<StudyOrder> getHKOrderList(
+    		@Param("hkid") String hkid , 
+    		@Param("isbuy") String isbuy,
+    		@Param("ccname") String ccname , 
+    		@Param("name") String name,
+    		@Param("hkname") String hkname
+    		) ;
     //获取平台所有证书
     List<Certificate> getCertificate() ;
     //获取征信信息

@@ -27,6 +27,12 @@
         <result column="option_name" property="name"/>
         <result column="option_des" property="content"/>
     </resultMap>
+    <resultMap id="getExamCatagory" type="yinao.qualityLife.model.domain.Exam">
+        <result column="ccid" property="ccid"/>
+        <result column="name" property="name"/>
+        <result column="card_isbuy" property="card_isbuy"/>
+    </resultMap>
+    
     
     <select id="getRecordByemid"  resultMap="getExamOptionben">
 		SELECT
@@ -39,6 +45,27 @@
 			and state = "1"
 	</select>
 	
+    <select id="baseExamCatagory"  resultMap="getExamCatagory">
+		SELECT
+			ccid,name 
+		FROM
+    		t_test_coursecatagory
+		WHERE
+			ccid <![CDATA[ <= ]]>'0'
+			and state = "1"
+	</select>
+    <select id="baseMyExamCatagory"  resultMap="getExamCatagory">
+		SELECT distinct t2.ccid,t3.name,
+		(case when t4.emid is not null then '已购买' 
+		else '未购买' end) as card_isbuy
+		from t_test_employer t1 
+		LEFT JOIN t_test_exam t2 on t1.eid=t2.eid
+		LEFT JOIN t_test_coursecatagory t3 on t2.ccid=t3.ccid
+		LEFT JOIN t_base_employer_viewcard t4 on t3.ccid=t4.ccid
+		WHERE 
+		username=#{username} and t1.state='1' and t2.state='1' and t3.state='1' 
+		and t3.ccid<![CDATA[ <= ]]>'0'
+	</select>
 	
 	<select id="getRecordByhkid"  resultMap="getExamOptionben">
 		SELECT
@@ -111,7 +138,7 @@
         FROM
         	`t_test_exam`
 		<where>
-			`t_test_exam`.ccid = '0'
+			`t_test_exam`.ccid = #{ccid}
         </where>   
 		GROUP BY
 			`t_test_exam`.eid 
@@ -128,7 +155,8 @@
         	`t_test_exam`.score,
         	`t_test_exam`.create_time,
         	`t_test_exam`.update_time,
-        	`t_test_exam`.sort,        	
+        	`t_test_exam`.sort,  
+        	`t_test_exam`.label,       	
         	`t_test_coursecatagory`.ismust,
         	`t_test_coursecatagory`.name as ccname ,
         	`t_test_exam_answer`.oid 
@@ -157,7 +185,9 @@
         </where>   
 		GROUP BY
 			`t_test_exam`.eid ,
-			`t_test_exam_answer`.oid			
+			`t_test_exam_answer`.oid	
+		ORDER BY 
+			`t_test_exam`.ccid desc,`t_test_exam`.eid desc
 	</select>
 	
 	    <!-- 获取小程序试题不带答案的随机结果集 -->
@@ -324,6 +354,7 @@
 	    		examtype=#{examtype},
 	    		score=#{score},
 	    		sort=#{sort},
+	    		label=#{label},
 	    		update_time=now()
 	    	</set>
         	where eid=#{eid}

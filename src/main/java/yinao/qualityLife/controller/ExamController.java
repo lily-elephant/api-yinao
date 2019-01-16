@@ -22,6 +22,7 @@ import yinao.qualityLife.model.domain.CourseCatagory;
 import yinao.qualityLife.model.domain.CourseCatagoryCount;
 import yinao.qualityLife.model.domain.Eid;
 import yinao.qualityLife.model.domain.Emid;
+import yinao.qualityLife.model.domain.Employer;
 import yinao.qualityLife.model.domain.Exam;
 import yinao.qualityLife.model.domain.ExamAdd;
 import yinao.qualityLife.model.domain.ExamBen;
@@ -264,7 +265,11 @@ public class ExamController{
   //获取入学考试列表
     @RequestMapping(value = "exam/baseExamlist",method = RequestMethod.POST)
     public ResultMap baseExamlist(@Valid Exam params, BindingResult bindingResult , HttpServletRequest request ){  
-        List<Exam> list = this.examMapper.baseExamlist() ;
+    	String ccid="0";
+    	if(params.getCcid()!=null) {
+    		ccid=params.getCcid();
+    	}
+    	List<Exam> list = this.examMapper.baseExamlist(ccid) ;
         for(int i = 0  ; i < list.size() ; i++ ) {
         	List<ExamOption> examOptions = this.examMapper.examOptionlist(list.get(i).getEid()) ; 
         	if(request.getHeader(tokenHeader)!=null && !"".equals(request.getHeader(tokenHeader)) && !request.getHeader(tokenHeader).isEmpty()) {
@@ -311,6 +316,19 @@ public class ExamController{
         }
         return new ResultMap().success().data(list); 
  
+    }
+    
+  //获取职位类别
+    @RequestMapping(value = "exam/baseExamCatagory",method = RequestMethod.POST)
+    public ResultMap baseExamCatagory(@Valid Exam params, BindingResult bindingResult , HttpServletRequest request ){  
+    	List<Exam> list = this.examMapper.baseExamCatagory() ;
+        return new ResultMap().success().data(list); 
+    }
+    //获取我需要的职位类别
+    @RequestMapping(value = "exam/baseMyExamCatagory",method = RequestMethod.POST)
+    public ResultMap baseMyExamCatagory(@Valid Employer params, BindingResult bindingResult , HttpServletRequest request ){  
+    	List<Exam> list = this.examMapper.baseMyExamCatagory(params.getUsername()) ;
+        return new ResultMap().success().data(list);
     }
     
     //增加考试结果

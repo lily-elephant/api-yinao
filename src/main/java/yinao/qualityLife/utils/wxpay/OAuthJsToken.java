@@ -1,4 +1,4 @@
-﻿package yinao.qualityLife.utils.wxpay;
+package yinao.qualityLife.utils.wxpay;
 
 /**
  * @Description:

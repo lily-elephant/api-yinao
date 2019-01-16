@@ -196,6 +196,7 @@
         <result column="state" property="state"/>
         <result column="isbuy" property="isbuy"/>
         <result column="name" property="name"/>
+        <result column="ccname" property="ccname"/>
         <result column="brief" property="brief"/>
         <result column="money" property="money"/>
         <result column="coursepicture" property="coursepicture"/>   
@@ -282,6 +283,7 @@
     		t_test_offline_training.name as ot_name,
     		t_test_offline_training.des,
     		t_test_offline_training.address,
+    		t_test_offline_training.money,
     		t_base_housekeeper.name ,
     		t_base_housekeeper.username 
 		FROM
@@ -299,7 +301,9 @@
         	</if>
         	<if test="username != null and username != ''">
         		and t_base_housekeeper.username like CONCAT('%',#{username},'%')
-        	</if>		
+        	</if>
+        ORDER BY 
+        	t_bill_housekeeper.create_time desc
     </select>
 
 
@@ -484,6 +488,7 @@
     	SELECT
     		`t_order_course`.ocid ,
     		`t_order_course`.hkid ,
+    		`t_test_coursecatagory`.name as ccname ,
     		`t_order_course`.cid ,
     		`t_order_course`.create_time ,
     		`t_order_course`.update_time ,
@@ -495,11 +500,12 @@
     		t_base_housekeeper.name as hkname ,
     		t_source_picture.path as coursepicture
         FROM
-        	t_order_course,t_test_course,t_base_housekeeper,t_source_picture
+        	t_order_course,t_test_course,t_base_housekeeper,t_source_picture,t_test_coursecatagory
         WHERE
         	t_order_course.cid = t_test_course.cid
         	and `t_order_course`.hkid=t_base_housekeeper.hkid
         	and `t_test_course`.coursepicture=t_source_picture.pid
+        	and `t_test_course`.ccid=`t_test_coursecatagory`.ccid
   			and t_order_course.state = 1 
   			<if test="hkid != null and hkid != ''">
         		and t_order_course.hkid = #{hkid}
@@ -507,6 +513,16 @@
         	<if test="isbuy != null and isbuy != ''">
         		and t_order_course.isbuy = #{isbuy}
         	</if>
+        	<if test="ccname != null and ccname != ''">
+        		and `t_test_coursecatagory`.name like CONCAT('%',#{ccname},'%')
+        	</if>
+        	<if test="name != null and name != ''">
+        		and `t_test_course`.name like CONCAT('%',#{name},'%')
+        	</if>
+        	<if test="hkname != null and hkname != ''">
+        		and t_base_housekeeper.name like CONCAT('%',#{hkname},'%')
+        	</if>
+        ORDER BY `t_test_course`.create_time desc
     </select>
     
     <select id="getCommentList"  resultMap="getCommentData">
@@ -973,9 +989,9 @@
    <insert id="registerLoginHousekeeper"   >
     	INSERT INTO
         	`t_base_housekeeper`
-        	(username,password,create_time , role_id ,state)
+        	(username,password,create_time , role_id ,state,frompart)
         	VALUES
-        	(#{username},#{password},now() , '1' , '0' )
+        	(#{username},#{password},now() , '1' , '0' ,'小程序录入')
    </insert>
    
    

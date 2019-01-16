@@ -97,6 +97,8 @@ public interface courseCatagoryMapper {
 	public List<CourseCatagoryCount> getUseCcidCount(@Param("ccid") String ccid);
 	//课程模块下拉框
 	public List<CourseCatagory> selectCourseCatagory();
+	//课程模块下拉框
+	public List<CourseCatagory> testselectCourseCatagory();
 	//课程模块搜索列表
 	public List<CourseCatagory> serachCourseCatagoryList(@Param("offset") int offset,@Param("pageSize") int pageSize,@Param("name") String name);
 	public List<CourseCatagoryCount> seachCourseCatagoryCount(@Param("name") String name);

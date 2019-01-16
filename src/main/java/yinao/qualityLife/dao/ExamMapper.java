@@ -37,7 +37,7 @@ public interface ExamMapper {
     );
     
   //获取试题列表
-    List<Exam> baseExamlist();
+    List<Exam> baseExamlist(@Param("ccid") String ccid);
     
     //根据试题id获取答案集
     List<ExamOption> examOptionlist(
@@ -142,6 +142,10 @@ public interface ExamMapper {
     //获取模块考试题的类型
     List<Exam> getLabelList( @Param("ccid") String ccid);
 
+    //获取所有职位类别
+    List<Exam> baseExamCatagory();
+    //获取我需要的职位类别
+    List<Exam> baseMyExamCatagory(@Param("username") String username);
     
    
 }

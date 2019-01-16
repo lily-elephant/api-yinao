@@ -11,6 +11,7 @@ public class StudyOrder {
 	private String state ;
 	private String isbuy ; 
 	private String name ;
+	private String ccname ;
 	private String brief ;
 	private String money ;
 	private String coursepicture ;
@@ -23,6 +24,13 @@ public class StudyOrder {
 
 	public void setHkname(String hkname) {
 		this.hkname = hkname;
+	}
+	public String getCcname() {
+		return ccname;
+	}
+
+	public void setCcname(String ccname) {
+		this.ccname = ccname;
 	}
 
 	public String getUpdate_time() {

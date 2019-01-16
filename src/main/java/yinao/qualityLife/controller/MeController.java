@@ -418,9 +418,7 @@ public class MeController {
 		String clienttype = tokenUtils.getUserTypeFromToken(token); 
 		String userid ;
 		if(clienttype.equals("EMPLOYER")) {
-			return new ResultMap().fail("401").message("此接口为housekeeper端接口");	
-//			Emid emidentity = userMapper.getEmidByUsername(username) ;
-//			userid = emidentity.getEmid() ; 
+			return new ResultMap().fail("401").message("此接口为housekeeper端接口");	 
 		}else {			
 			Hkid hkidentity = userMapper.getHkidByUsername(username) ;
 			userid = hkidentity.getHkid() ; 
@@ -438,7 +436,10 @@ public class MeController {
 		}else if("0".equals(params.getIsbuy())){
 			params.setIsbuy("1");
 		}
-		List<StudyOrder> list = userMapper.getHKOrderList(userid, params.getIsbuy());	
+		String ccname=request.getParameter("ccname");
+		String name=request.getParameter("name");
+		String hkname=request.getParameter("hkname");
+		List<StudyOrder> list = userMapper.getHKOrderList(userid, params.getIsbuy(),ccname,name,hkname);	
 		List<StudyOrder> list01  = PageUtils.getList(list , pageindex , pagecount ) ; 
 		return new ResultMap().success().count(list.size()).data(list01);	
     }
@@ -446,51 +447,38 @@ public class MeController {
 	
 	@RequestMapping(value = "admin/getHKOrderList",method = RequestMethod.POST)
     public ResultMap getadminHKOrderList(@Valid StudyOrder params, BindingResult bindingResult , HttpServletRequest request){
-//        if (request.getParameter("isbuy") == null){
-//            return new ResultMap().fail("400").message("缺少参数isbuy");
-//        }
-        if(request.getParameter("usertype") == null) {
-        	 return new ResultMap().fail("400").message("缺少参数usertype");
-        }
-        if(request.getParameter("pageindex") == null) {
+		String token = request.getHeader(tokenHeader) ;
+		//username特殊一点
+		String username = request.getParameter("username");
+		String clienttype = tokenUtils.getUserTypeFromToken(token); 
+		String userid="" ;
+		if(clienttype.equals("EMPLOYER")) {
+			return new ResultMap().fail("401").message("此接口为housekeeper端接口");	 
+		}else {			
+			Hkid hkidentity = userMapper.getHkidByUsername(username) ;
+			if(hkidentity!=null) {
+				userid = hkidentity.getHkid() ; 
+			}
+		}
+		if(request.getParameter("pageindex") == null) {
 			return new ResultMap().fail("400").message("缺少参数pageindex");
 		}
 		if(request.getParameter("pagecount") == null) {
 			return new ResultMap().fail("400").message("缺少参数pagecount");
 		}
-		if( !"BUTLER".equals(request.getParameter("usertype") )) {
-			return new ResultMap().fail("400").message("参数usertype不合法");
+		int pageindex = Integer.parseInt(request.getParameter("pageindex")); //
+		int pagecount = Integer.parseInt(request.getParameter("pagecount")); //
+		if("1".equals(params.getIsbuy())) {
+			params.setIsbuy("0");
+		}else if("0".equals(params.getIsbuy())){
+			params.setIsbuy("1");
 		}
-        //String username = "" ;
-        if(request.getParameter("username") == null ) {
-        	//username = request.getParameter("username") ; 
-//    		Hkid hkidentity = userMapper.getHkidByUsername(username) ;
-//			if(hkidentity != null) {
-//				userid = hkidentity.getHkid() ; 
-//			}
-        	String userid = "";
-    		int pageindex = Integer.parseInt(request.getParameter("pageindex")); //
-    		int pagecount = Integer.parseInt(request.getParameter("pagecount")); //
-    		List<StudyOrder> list = userMapper.getHKOrderList(userid, params.getIsbuy());	
-    		List<StudyOrder> list01  = PageUtils.getList(list , pageindex , pagecount ) ; 
-    		return new ResultMap().success().count(list.size()).data(list01);	
-        }else {
-        	String username = request.getParameter("username") ; 
-    		Hkid hkidentity = userMapper.getHkidByUsername(username) ;
-//			if(hkidentity = null) {
-//				userid = hkidentity.getHkid() ; 
-//			}
-			if(hkidentity == null) {
-				return new ResultMap().success().count(0).data("");	
-			}else {
-				String userid = hkidentity.getHkid() ; 
-				int pageindex = Integer.parseInt(request.getParameter("pageindex")); //
-	    		int pagecount = Integer.parseInt(request.getParameter("pagecount")); //
-	    		List<StudyOrder> list = userMapper.getHKOrderList(userid, params.getIsbuy());	
-	    		List<StudyOrder> list01  = PageUtils.getList(list , pageindex , pagecount ) ; 
-	    		return new ResultMap().success().count(list.size()).data(list01);	
-			}
-        }
+		String ccname=request.getParameter("ccname");
+		String name=request.getParameter("name");
+		String hkname=request.getParameter("hkname");
+		List<StudyOrder> list = userMapper.getHKOrderList(userid, params.getIsbuy(),ccname,name,hkname);	
+		List<StudyOrder> list01  = PageUtils.getList(list , pageindex , pagecount ) ; 
+		return new ResultMap().success().count(list.size()).data(list01);
       	
     }
 	

@@ -378,8 +378,17 @@ public class CourseControllers {
 			return new ResultMap().success().message("success").data(courseCatagories );		
 		}else {
 			return new ResultMap().success().message("没有更多数据");
-		}	
-	
+		}
+	}
+	//课程模块下拉(含系统必须)
+	@RequestMapping(value="/course/testselectcoursecatagory",method=RequestMethod.POST)
+	public ResultMap testselectCourseCatagory(HttpServletRequest request){
+		List<CourseCatagory> courseCatagories=this.courseCatagoryMapper.testselectCourseCatagory();
+		if(courseCatagories.size() != 0) {
+			return new ResultMap().success().message("success").data(courseCatagories );		
+		}else {
+			return new ResultMap().success().message("没有更多数据");
+		}
 	}
 
 	//后台课程列表

@@ -18,8 +18,15 @@ public class Exam {
 	private String ture_answer ;
 	private List<ExamOption> option ;
 	private String label ; 
+	private String card_isbuy ; 
 	
-	
+	public String getCard_isbuy() {
+		return card_isbuy;
+	}
+
+	public void setCard_isbuy(String card_isbuy) {
+		this.card_isbuy = card_isbuy;
+	}
 	public String getLabel() {
 		return label;
 	}
