@@ -65,7 +65,7 @@
 	        	`t_source_article`
 	        	(name,sort,brief,content,scid,create_at,create_time,update_time)
 	        	VALUES
-	        	(#{name}, #{sort},#{brief},#{content},#{scid},#{create_at}, now() , now())
+	        	(#{name}, 0,#{brief},#{content},#{scid},#{create_at}, now() , now())
 	</insert>
  	<update id="editArticle" >
  		update `t_source_article` 

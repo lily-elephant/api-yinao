@@ -99,7 +99,7 @@
 		 		and t_test_course.ccid=#{ccid}
 		 	</if>
 		ORDER BY 
-			`t_test_course`.cid desc,`t_test_course`.update_time desc
+			`t_test_course`.sort desc,`t_test_course`.update_time desc
 		LIMIT #{offset},#{pageSize}
 		
     </select>

@@ -111,8 +111,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/exam/baseExamlist").permitAll()
                 .antMatchers("/getPersonalityTest").permitAll()
                 //online
-                .antMatchers("/version104").permitAll()
-                .antMatchers("/version105").permitAll()
+                .antMatchers("/version109").permitAll()
+                .antMatchers("/version110").permitAll()
                 
                 
                 
