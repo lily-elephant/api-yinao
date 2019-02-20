@@ -147,7 +147,7 @@
         </where>
         ORDER BY
   			create_time desc 
-		LIMIT ${(currpage-1)*pagesize},${currpage*pagesize}; 
+		LIMIT ${(currpage-1)*pagesize},${pagesize}; 
     </select>
     
     <select id="houseKeeperList" resultMap="getUserFromDatabaseMap">
@@ -195,7 +195,7 @@
         ORDER BY
   			t1.primaryid desc
   			<if test="currpage != -1 and pagesize != -1">
-        		LIMIT ${(currpage-1)*pagesize},${currpage*pagesize}; 
+        		LIMIT ${(currpage-1)*pagesize},${pagesize}; 
         	</if>	
     </select>
     <select id="emhouseKeeperContractList" resultMap="getEmployerHouseKeeperMap" >
